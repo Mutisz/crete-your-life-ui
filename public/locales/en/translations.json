@@ -1,0 +1,32 @@
+{
+  "language": "Language",
+
+  "booking": "Booking",
+  "activities": "Activities",
+  "blog": "Blog",
+
+  "maskWorkInProgress": "Page under construction...",
+
+  "buttonNext": "Next",
+  "buttonBack": "Back",
+  "buttonConfirm": "Confirm",
+
+  "bookingButtonAdd": "Add to reservation",
+  "bookingStepTripInformation": "Information",
+  "bookingStepTripInformationDescription": "Provide information about your trip to get started",
+  "bookingStepActivityList": "Activities",
+  "bookingStepActivityListDescription": "Select activities for days within selected date range",
+  "bookingStepHotelList": "Hotel",
+  "bookingStepHotelListDescription": "Select hotel or hotels for days within selected date range",
+  "bookingStepServiceList": "Services",
+  "bookingStepServiceListDescription": "Select additional services",
+  "bookingStepConfirm": "Confirmation",
+  "bookingStepConfirmDescription": "Provide contact data and confirm booking",
+  "bookingDateClear": "Clear",
+  "bookingDateCancel": "Cancel",
+  "bookingDateFrom": "Start date",
+  "bookingDateTo": "End date",
+  "bookingPersonCount": "Person count",
+  "bookingNoActivitySelected": "No activity",
+  "bookingNoActivitySelectedDescription": "Select a day and add activity to it using the list below"
+}

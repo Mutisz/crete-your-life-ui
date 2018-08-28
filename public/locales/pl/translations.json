@@ -1,0 +1,32 @@
+{
+  "language": "Język",
+
+  "booking": "Rezerwacja",
+  "activities": "Aktywności",
+  "blog": "Blog",
+
+  "maskWorkInProgress": "Strona w przygotowaniu...",
+
+  "buttonNext": "Dalej",
+  "buttonBack": "Wstecz",
+  "buttonConfirm": "Potwierdź",
+
+  "bookingButtonAdd": "Dodaj do rezerwacji",
+  "bookingStepTripInformation": "Informacje",
+  "bookingStepTripInformationDescription": "Podaj informacje o swojej podróży aby zacząć proces rezerwacji",
+  "bookingStepActivityList": "Aktywności",
+  "bookingStepActivityListDescription": "Przypisz aktywności do dni w wybranym zakresie dat",
+  "bookingStepHotelList": "Hotel",
+  "bookingStepHotelListDescription": "Przypisz hotel lub hotele do dni w wybranym zakresie dat",
+  "bookingStepServiceList": "Usługi",
+  "bookingStepServiceListDescription": "Wybierz dodatkowe usługi",
+  "bookingStepConfirm": "Potwierdzenie",
+  "bookingStepConfirmDescription": "Podaj dane kontaktowe i potwierdź rezerwację",
+  "bookingDateClear": "Czyść",
+  "bookingDateCancel": "Anuluj",
+  "bookingDateFrom": "Data początku",
+  "bookingDateTo": "Data końca",
+  "bookingPersonCount": "Ilość osób",
+  "bookingNoActivitySelected": "Brak aktywności",
+  "bookingNoActivitySelectedDescription": "Zaznacz dzień i dodaj do niego aktywność korzystając z listy poniżej"
+}
