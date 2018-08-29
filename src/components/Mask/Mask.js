@@ -29,7 +29,7 @@ const enhance = flow(
 
 const Mask = ({ classes, t, messageKey, color }) => (
   <div className={classes.root}>
-    <img src="images/placeholder.png" className={classes.image} />
+    <img src="/images/placeholder.png" className={classes.image} />
     <Typography variant="title" color={color}>
       {t(messageKey)}
     </Typography>
