@@ -27,6 +27,10 @@
   "bookingDateFrom": "Data początku",
   "bookingDateTo": "Data końca",
   "bookingPersonCount": "Ilość osób",
+  "bookingEmail": "Adres email",
+  "bookingPhone": "Telefon",
   "bookingNoActivitySelected": "Brak aktywności",
-  "bookingNoActivitySelectedDescription": "Zaznacz dzień i dodaj do niego aktywność korzystając z listy poniżej"
+  "bookingNoActivitySelectedDescription": "Zaznacz dzień i dodaj do niego aktywność korzystając z listy poniżej",
+  "bookingConfirmation": "Potwierdzenie rezerwacji",
+  "bookingConfirmationTitle": "Rezerwacja nr {{id}}"
 }

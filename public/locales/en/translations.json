@@ -27,6 +27,10 @@
   "bookingDateFrom": "Start date",
   "bookingDateTo": "End date",
   "bookingPersonCount": "Person count",
+  "bookingEmail": "Email address",
+  "bookingPhone": "Phone number",
   "bookingNoActivitySelected": "No activity",
-  "bookingNoActivitySelectedDescription": "Select a day and add activity to it using the list below"
+  "bookingNoActivitySelectedDescription": "Select a day and add activity to it using the list below",
+  "bookingConfirmation": "Booking confirmation",
+  "bookingConfirmationTitle": "Booking {{id}}"
 }

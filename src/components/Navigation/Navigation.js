@@ -48,13 +48,17 @@ const styles = theme => {
     mainContent: {
       flexGrow: 1,
       width: `calc(100vw - ${navigationWidth + 2 * padding}px)`,
-      minHeight: `calc(100vh - ${toolbarHeight + 2 * padding}px)`,
+      height: `calc(100vh - ${toolbarHeight + 2 * padding}px)`,
       marginTop: toolbarHeight,
-      padding: padding,
-      backgroundColor: theme.palette.background.default,
       [theme.breakpoints.up("md")]: {
         marginLeft: navigationWidth
       }
+    },
+    mainContentScroll: {
+      height: "100%",
+      padding: padding,
+      overflowY: "scroll",
+      backgroundColor: theme.palette.background.default
     }
   };
 };
@@ -96,7 +100,8 @@ class NavigationContainer extends Component {
               noWrap
             >
               <Route path="/" render={() => t("booking")} exact />
-              <Route path="/activities" render={() => t("activities")} />
+              <Route path="/activityList" render={() => t("activities")} />
+              <Route path="/booking" render={() => t("bookingConfirmation")} />
             </Typography>
             <SettingsDialog />
           </Toolbar>
@@ -125,7 +130,9 @@ class NavigationContainer extends Component {
             {<NavigationMenu />}
           </Drawer>
         </Hidden>
-        <main className={classes.mainContent}>{children}</main>
+        <main className={classes.mainContent}>
+          <div className={classes.mainContentScroll}>{children}</div>
+        </main>
       </div>
     );
   }
