@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { flow, find, get } from "lodash";
-import { findItemTranslation } from "../../helpers/bookingHelper";
+import { flow } from "lodash";
+import {
+  findItemTranslation,
+  findItemThumbnailUrl
+} from "../../helpers/bookingHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -48,18 +51,8 @@ const enhance = flow(
   translate()
 );
 
-const getThumbnailUrl = activity => {
-  const placeholderUrl = "/images/placeholder.png";
-  const thumbnailUrl = get(
-    find(activity.imageList, image => Boolean(image.isThumbnail)),
-    "url"
-  );
-
-  return thumbnailUrl || placeholderUrl;
-};
-
 const ActivityCard = ({ classes, i18n, t, activity, handleActivityAdd }) => {
-  const url = getThumbnailUrl(activity);
+  const url = findItemThumbnailUrl(activity);
   const activityTranslation = findItemTranslation(activity, i18n.language);
   return (
     <Card className={classes.root}>

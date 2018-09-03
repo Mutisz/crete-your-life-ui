@@ -6,7 +6,12 @@ import {
   getStringFromDate,
   getDateList
 } from "../../helpers/dateHelper";
-import { findItem, findItemTranslation } from "../../helpers/bookingHelper";
+import {
+  PLACEHOLDER_URL,
+  findItem,
+  findItemTranslation,
+  findItemThumbnailUrl
+} from "../../helpers/bookingHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -45,10 +50,20 @@ const enhance = flow(
 );
 
 class DateItemList extends Component {
-  getItemTranslation = dateString => {
-    const { i18n, dateItemList, itemList } = this.props;
-    const item = findItem(dateString, dateItemList, itemList);
+  findItemByDateString = dateString => {
+    const { dateItemList, itemList } = this.props;
+    return findItem(dateString, dateItemList, itemList);
+  };
+
+  findItemTranslationByDateString = dateString => {
+    const { i18n } = this.props;
+    const item = this.findItemByDateString(dateString);
     return item ? findItemTranslation(item, i18n.language) : null;
+  };
+
+  findItemThumbnailUrlByDateString = dateString => {
+    const item = this.findItemByDateString(dateString);
+    return item ? findItemThumbnailUrl(item) : PLACEHOLDER_URL;
   };
 
   renderDateItem = date => {
@@ -59,7 +74,7 @@ class DateItemList extends Component {
       handleDateItemSelect
     } = this.props;
     const dateString = getStringFromDate(date);
-    const itemTranslation = this.getItemTranslation(dateString);
+    const itemTranslation = this.findItemTranslationByDateString(dateString);
     const isDateItemSelected = dateItemSelected
       ? dateString === dateItemSelected
       : false;
@@ -69,6 +84,7 @@ class DateItemList extends Component {
         : classes.listTileBarTitle
     };
 
+    const thumbnailUrl = this.findItemThumbnailUrlByDateString(dateString);
     const title = formatDate(date, i18n.language);
     const subtitle = itemTranslation ? itemTranslation.name : null;
 
@@ -78,7 +94,7 @@ class DateItemList extends Component {
         className={classes.listTile}
         onClick={() => handleDateItemSelect(dateString)}
       >
-        <img src="images/placeholder.png" alt={title} />
+        <img src={thumbnailUrl} alt={title} />
         <GridListTileBar
           title={title}
           subtitle={subtitle}

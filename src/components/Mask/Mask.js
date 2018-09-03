@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { flow } from "lodash";
+import { PLACEHOLDER_URL } from "../../helpers/bookingHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -29,7 +30,7 @@ const enhance = flow(
 
 const Mask = ({ classes, t, messageKey, color }) => (
   <div className={classes.root}>
-    <img src="/images/placeholder.png" className={classes.image} />
+    <img src={PLACEHOLDER_URL} alt="" className={classes.image} />
     <Typography variant="title" color={color}>
       {t(messageKey)}
     </Typography>
