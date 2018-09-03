@@ -136,6 +136,7 @@ BookingStepActivityList.propTypes = {
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
+  mutate: PropTypes.func.isRequired,
   bookingStatus: bookingStatusProp.isRequired,
   activityList: PropTypes.arrayOf(activityProp).isRequired,
   renderStepperActionGroup: PropTypes.func.isRequired,

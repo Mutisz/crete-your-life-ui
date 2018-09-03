@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { flow } from "lodash";
-import { getDateFromString, getStringFromDate } from "../../helpers/dateHelper";
-
-import { DATE_FORMAT } from "../../config/createI18nDate";
+import { getStringFromDate } from "../../helpers/dateHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
 
-import TextField from "@material-ui/core/TextField";
-import DatePicker from "material-ui-pickers/DatePicker";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import DateRange from "../input/DateRange";
 
 import bookingStatusProp from "../PropTypes/bookingStatusPropType";
 
@@ -20,12 +18,12 @@ const styles = theme => ({
   inputGroup: {
     display: "flex",
     flexWrap: "wrap",
+    justifyContent: "space-between",
     marginBottom: 3 * theme.spacing.unit
   },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200
+  inputField: {
+    flexBasis: "45%",
+    marginBottom: theme.spacing.unit
   }
 });
 
@@ -47,57 +45,39 @@ class BookingStepTripInformation extends Component {
 
   handlePersonCountChange = e =>
     this.props.updateBookingStatus({
-      personCount: parseInt(e.target.value)
+      personCount: e.target.value
     });
-
-  renderDatePicker = (labelKey, dateString, changeHandler) => {
-    const { classes, t } = this.props;
-    return (
-      <DatePicker
-        className={classes.textField}
-        label={t(labelKey)}
-        clearLabel={t("bookingDateClear")}
-        cancelLabel={t("bookingDateCancel")}
-        format={DATE_FORMAT}
-        value={getDateFromString(dateString)}
-        onChange={changeHandler}
-        disablePast
-        clearable
-        autoOk
-      />
-    );
-  };
 
   render() {
     const {
       classes,
       t,
       bookingStatus: { fromDateString, toDateString, personCount },
-      renderStepperActionGroup
+      renderStepperActionGroup,
+      handleNext
     } = this.props;
 
     return (
-      <div className={classes.root}>
+      <ValidatorForm className={classes.root} onSubmit={handleNext}>
         <div className={classes.inputGroup}>
-          {this.renderDatePicker(
-            "bookingDateFrom",
-            fromDateString,
-            this.handleFromDateChange
-          )}
-          {this.renderDatePicker(
-            "bookingDateTo",
-            toDateString,
-            this.handleToDateChange
-          )}
-          <TextField
-            className={classes.textField}
-            label={t("bookingPersonCount")}
+          <DateRange
+            fromDateString={fromDateString}
+            toDateString={toDateString}
+            handleFromDateChange={this.handleFromDateChange}
+            handleToDateChange={this.handleToDateChange}
+          />
+          <TextValidator
+            className={classes.inputField}
+            name="inputPersonCount"
+            label={t("inputPersonCount")}
             value={personCount}
             onChange={this.handlePersonCountChange}
+            validators={["required"]}
+            errorMessages={[t("validationRequired")]}
           />
         </div>
-        {renderStepperActionGroup()}
-      </div>
+        {renderStepperActionGroup(true)}
+      </ValidatorForm>
     );
   }
 }
@@ -107,7 +87,8 @@ BookingStepTripInformation.propTypes = {
   t: PropTypes.func.isRequired,
   bookingStatus: bookingStatusProp,
   renderStepperActionGroup: PropTypes.func.isRequired,
-  updateBookingStatus: PropTypes.func.isRequired
+  updateBookingStatus: PropTypes.func.isRequired,
+  handleNext: PropTypes.func.isRequired
 };
 
 export default enhance(BookingStepTripInformation);

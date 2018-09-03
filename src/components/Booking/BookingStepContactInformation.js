@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import gql from "graphql-tag";
-import { flow, curry, map, find } from "lodash";
-import { getStringFromDate, getDateList } from "../../helpers/dateHelper";
+import { flow, curry } from "lodash";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
-import withMutation from "../hoc/withMutation";
 
-import TextField from "@material-ui/core/TextField";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 import bookingStatusProp from "../PropTypes/bookingStatusPropType";
 
@@ -21,55 +18,19 @@ const styles = theme => ({
     flexWrap: "wrap",
     marginBottom: 3 * theme.spacing.unit
   },
-  textField: {
+  inputField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     width: 200
   }
 });
 
-const ADD_BOOKING = gql`
-  mutation AddBooking($booking: BookingInput!) {
-    addBooking(booking: $booking) {
-      id
-    }
-  }
-`;
-
 const enhance = flow(
   withStyles(styles),
-  translate(),
-  withMutation(ADD_BOOKING, undefined)
+  translate()
 );
 
 class BookingStepContactInformation extends Component {
-  getBookingInput = () => {
-    const {
-      bookingStatus: {
-        fromDateString,
-        toDateString,
-        email,
-        phone,
-        dateActivityList
-      }
-    } = this.props;
-    const dateList = map(getDateList(fromDateString, toDateString), date => {
-      const dateString = getStringFromDate(date);
-      const activity = find(dateActivityList, ["dateString", dateString]);
-      return {
-        dateString: dateString,
-        activity: activity ? { name: activity.name } : null
-      };
-    });
-
-    return { booking: { email, phone, dateList } };
-  };
-
-  handleAddBooking = () => {
-    const variables = this.getBookingInput();
-    this.props.mutate({ variables }).then(this.props.handleBookingAdded);
-  };
-
   handleFieldChange = curry((field, e) =>
     this.props.updateBookingStatus({
       [field]: e.target.value
@@ -81,27 +42,34 @@ class BookingStepContactInformation extends Component {
       classes,
       t,
       bookingStatus: { email, phone },
-      renderStepperActionGroup
+      renderStepperActionGroup,
+      handleNext
     } = this.props;
 
     return (
-      <form className={classes.root}>
+      <ValidatorForm className={classes.root} onSubmit={handleNext}>
         <div className={classes.inputGroup}>
-          <TextField
-            className={classes.textField}
-            label={t("bookingEmail")}
-            value={email}
+          <TextValidator
+            className={classes.inputField}
+            name="inputEmail"
+            label={t("inputEmail")}
+            value={email || ""}
             onChange={this.handleFieldChange("email")}
+            validators={["required"]}
+            errorMessages={[t("validationRequired")]}
           />
-          <TextField
-            className={classes.textField}
-            label={t("bookingPhone")}
-            value={phone}
+          <TextValidator
+            className={classes.inputField}
+            name="inputPhone"
+            label={t("inputPhone")}
+            value={phone || ""}
             onChange={this.handleFieldChange("phone")}
+            validators={["required"]}
+            errorMessages={[t("validationRequired")]}
           />
         </div>
-        {renderStepperActionGroup(false, false, this.handleAddBooking)}
-      </form>
+        {renderStepperActionGroup(true)}
+      </ValidatorForm>
     );
   }
 }
@@ -114,7 +82,7 @@ BookingStepContactInformation.propTypes = {
   bookingStatus: bookingStatusProp.isRequired,
   renderStepperActionGroup: PropTypes.func.isRequired,
   updateBookingStatus: PropTypes.func.isRequired,
-  handleBookingAdded: PropTypes.func.isRequired
+  handleNext: PropTypes.func.isRequired
 };
 
 export default enhance(BookingStepContactInformation);

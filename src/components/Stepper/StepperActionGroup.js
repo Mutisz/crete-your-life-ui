@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { flow } from "lodash";
+import { flow, noop } from "lodash";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -23,25 +23,24 @@ const StepperActionGroup = ({
   t,
   handleBack,
   handleNext,
-  handleConfirm,
   isStepFirst,
   isStepLast,
-  isBackDisabled,
-  isNextDisabled
+  isWithinForm
 }) => (
   <Fragment>
     <Button
-      disabled={isStepFirst || isBackDisabled}
+      type="button"
+      disabled={isStepFirst}
       onClick={handleBack}
       className={classes.button}
     >
       {t("buttonBack")}
     </Button>
     <Button
+      type={isWithinForm ? "submit" : "button"}
       variant="contained"
       color="secondary"
-      disabled={isNextDisabled}
-      onClick={isStepLast ? handleConfirm : handleNext}
+      onClick={isWithinForm ? noop : handleNext}
       className={classes.button}
     >
       {isStepLast ? t("buttonConfirm") : t("buttonNext")}
@@ -50,8 +49,7 @@ const StepperActionGroup = ({
 );
 
 StepperActionGroup.defaultProps = {
-  isBackDisabled: false,
-  isNextDisabled: false
+  isWithinForm: false
 };
 
 StepperActionGroup.propTypes = {
@@ -59,11 +57,9 @@ StepperActionGroup.propTypes = {
   t: PropTypes.func.isRequired,
   handleBack: PropTypes.func.isRequired,
   handleNext: PropTypes.func.isRequired,
-  handleConfirm: PropTypes.func.isRequired,
   isStepFirst: PropTypes.bool.isRequired,
   isStepLast: PropTypes.bool.isRequired,
-  isBackDisabled: PropTypes.bool,
-  isNextDisabled: PropTypes.bool
+  isWithinForm: PropTypes.bool
 };
 
 export default enhance(StepperActionGroup);

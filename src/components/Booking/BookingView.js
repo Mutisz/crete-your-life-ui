@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
-import { flow, noop } from "lodash";
+import { flow, map, find } from "lodash";
+import { getDateList, getStringFromDate } from "../../helpers/dateHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 import withQuery from "../hoc/withQuery";
+import withMutation from "../hoc/withMutation";
 import withStepHelper from "../hoc/withStepHelper";
 
 import Paper from "@material-ui/core/Paper";
@@ -74,14 +76,47 @@ const BOOKING_VIEW_QUERY = gql`
   }
 `;
 
+const BOOKING_VIEW_MUTATION = gql`
+  mutation AddBooking($booking: BookingInput!) {
+    addBooking(booking: $booking) {
+      id
+    }
+  }
+`;
+
 const enhance = flow(
   withRouter,
   withStyles(styles),
   withQuery(BOOKING_VIEW_QUERY, undefined, undefined),
+  withMutation(BOOKING_VIEW_MUTATION, undefined),
   withStepHelper(BOOKING_STEP_LIST)
 );
 
 class BookingView extends Component {
+  getBookingInput = () => {
+    const {
+      data: {
+        bookingStatus: {
+          fromDateString,
+          toDateString,
+          email,
+          phone,
+          dateActivityList
+        }
+      }
+    } = this.props;
+    const dateList = map(getDateList(fromDateString, toDateString), date => {
+      const dateString = getStringFromDate(date);
+      const activity = find(dateActivityList, ["dateString", dateString]);
+      return {
+        dateString: dateString,
+        activity: activity ? { name: activity.name } : null
+      };
+    });
+
+    return { booking: { email, phone, dateList } };
+  };
+
   updateBookingStatus = valueObject => {
     const {
       client,
@@ -109,15 +144,24 @@ class BookingView extends Component {
 
   handleNext = () => {
     const {
-      stepHelper,
+      stepHelper: { getStepNext, isStepLast },
       data: { bookingStatus }
     } = this.props;
-    return this.updateBookingStatus({
-      activeStep: stepHelper.getStepNext(bookingStatus.activeStep)
-    });
+    const isActiveStepLast = isStepLast(bookingStatus.activeStep);
+    return isActiveStepLast
+      ? this.handleConfirm()
+      : this.updateBookingStatus({
+          activeStep: getStepNext(bookingStatus.activeStep)
+        });
   };
 
-  handleBookingAdded = ({
+  handleConfirm = () => {
+    const { mutate } = this.props;
+    const variables = this.getBookingInput();
+    mutate({ variables }).then(this.handleConfirmSuccess);
+  };
+
+  handleConfirmSuccess = ({
     data: {
       addBooking: { id }
     }
@@ -133,11 +177,7 @@ class BookingView extends Component {
     />
   );
 
-  renderStepperActionGroup = (
-    isBackDisabled = false,
-    isNextDisabled = false,
-    handleConfirm = noop
-  ) => {
+  renderStepperActionGroup = (isWithinForm = false) => {
     const {
       stepHelper: { isStepFirst, isStepLast },
       data: { bookingStatus }
@@ -146,11 +186,9 @@ class BookingView extends Component {
       <StepperActionGroup
         handleBack={this.handleBack}
         handleNext={this.handleNext}
-        handleConfirm={handleConfirm}
         isStepFirst={isStepFirst(bookingStatus.activeStep)}
         isStepLast={isStepLast(bookingStatus.activeStep)}
-        isBackDisabled={isBackDisabled}
-        isNextDisabled={isNextDisabled}
+        isWithinForm={isWithinForm}
       />
     );
   };
@@ -161,7 +199,8 @@ class BookingView extends Component {
     const commonProps = {
       bookingStatus,
       renderStepperActionGroup: this.renderStepperActionGroup,
-      updateBookingStatus: this.updateBookingStatus
+      updateBookingStatus: this.updateBookingStatus,
+      handleNext: this.handleNext
     };
 
     switch (activeStep) {
@@ -212,14 +251,17 @@ class BookingView extends Component {
   }
 }
 
+const dataProp = PropTypes.shape({
+  bookingStatus: bookingStatusProp,
+  activityList: PropTypes.arrayOf(activityProp).isRequired
+});
+
 BookingView.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   client: PropTypes.object.isRequired,
-  data: PropTypes.shape({
-    bookingStatus: bookingStatusProp,
-    activityList: PropTypes.arrayOf(activityProp).isRequired
-  }),
+  data: dataProp.isRequired,
+  mutate: PropTypes.func.isRequired,
   stepHelper: PropTypes.shape({
     getStepNext: PropTypes.func.isRequired,
     getStepPrevious: PropTypes.func.isRequired,
