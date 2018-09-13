@@ -9,7 +9,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import { LANGUAGE_LIST } from "../../config/createI18n";
+import { LANGUAGES } from "../../config/createI18n";
 
 class LanguageMenu extends Component {
   state = {
@@ -48,7 +48,7 @@ class LanguageMenu extends Component {
           >
             <ListItemText
               primary={label}
-              secondary={LANGUAGE_LIST[currentLanguageId]}
+              secondary={LANGUAGES[currentLanguageId]}
             />
           </ListItem>
         </List>
@@ -58,7 +58,7 @@ class LanguageMenu extends Component {
           open={Boolean(anchorEl)}
           onClose={this.handleClose}
         >
-          {map(LANGUAGE_LIST, (readable, id) => (
+          {map(LANGUAGES, (readable, id) => (
             <MenuItem
               key={id}
               selected={id === currentLanguageId}

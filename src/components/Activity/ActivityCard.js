@@ -11,7 +11,6 @@ import { translate } from "react-i18next";
 
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
@@ -51,7 +50,7 @@ const enhance = flow(
   translate()
 );
 
-const ActivityCard = ({ classes, i18n, t, activity, handleActivityAdd }) => {
+const ActivityCard = ({ classes, i18n, activity, renderCardActions }) => {
   const url = findItemThumbnailUrl(activity);
   const activityTranslation = findItemTranslation(activity, i18n.language);
   return (
@@ -69,19 +68,10 @@ const ActivityCard = ({ classes, i18n, t, activity, handleActivityAdd }) => {
           {activityTranslation.shortDescription}
         </Typography>
       </CardContent>
-      {handleActivityAdd ? (
+      {renderCardActions ? (
         <div className={classes.actionGroup}>
           <Divider />
-          <CardActions>
-            <Button
-              size="small"
-              color="primary"
-              className={classes.button}
-              onClick={() => handleActivityAdd(activity.name)}
-            >
-              {t("bookingButtonAdd")}
-            </Button>
-          </CardActions>
+          <CardActions>{renderCardActions(classes, activity)}</CardActions>
         </div>
       ) : null}
     </Card>
@@ -91,9 +81,8 @@ const ActivityCard = ({ classes, i18n, t, activity, handleActivityAdd }) => {
 ActivityCard.propTypes = {
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
   activity: activityProp.isRequired,
-  handleActivityAdd: PropTypes.func
+  renderCardActions: PropTypes.func
 };
 
 export default enhance(ActivityCard);

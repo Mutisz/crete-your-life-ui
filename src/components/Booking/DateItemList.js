@@ -4,7 +4,7 @@ import { flow } from "lodash";
 import {
   formatDate,
   getStringFromDate,
-  getDateList
+  getDates
 } from "../../helpers/dateHelper";
 import {
   PLACEHOLDER_URL,
@@ -51,8 +51,8 @@ const enhance = flow(
 
 class DateItemList extends Component {
   findItemByDateString = dateString => {
-    const { dateItemList, itemList } = this.props;
-    return findItem(dateString, dateItemList, itemList);
+    const { dateItems, items } = this.props;
+    return findItem(dateString, dateItems, items);
   };
 
   findItemTranslationByDateString = dateString => {
@@ -106,12 +106,12 @@ class DateItemList extends Component {
 
   render = () => {
     const { classes, fromDateString, toDateString } = this.props;
-    const dateList = getDateList(fromDateString, toDateString);
+    const dates = getDates(fromDateString, toDateString);
 
     return (
       <div className={classes.root}>
         <GridList className={classes.list} cols={3}>
-          {dateList.map(date => this.renderDateItem(date))}
+          {dates.map(date => this.renderDateItem(date))}
         </GridList>
       </div>
     );
@@ -124,8 +124,8 @@ DateItemList.propTypes = {
   fromDateString: PropTypes.string.isRequired,
   toDateString: PropTypes.string.isRequired,
   dateItemSelected: PropTypes.string,
-  dateItemList: PropTypes.arrayOf(dateItemProp).isRequired,
-  itemList: PropTypes.arrayOf(
+  dateItems: PropTypes.arrayOf(dateItemProp).isRequired,
+  items: PropTypes.arrayOf(
     PropTypes.shape({ name: PropTypes.string.isRequired })
   ).isRequired,
   handleDateItemSelect: PropTypes.func.isRequired

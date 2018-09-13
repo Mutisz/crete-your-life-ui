@@ -100,7 +100,7 @@ class NavigationContainer extends Component {
               noWrap
             >
               <Route path="/" render={() => t("booking")} exact />
-              <Route path="/activityList" render={() => t("activities")} />
+              <Route path="/activities" render={() => t("activities")} />
               <Route path="/booking" render={() => t("bookingConfirmation")} />
             </Typography>
             <SettingsDialog />

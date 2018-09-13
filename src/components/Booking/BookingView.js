@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, map, find } from "lodash";
-import { getDateList, getStringFromDate } from "../../helpers/dateHelper";
+import { getDates, getStringFromDate } from "../../helpers/dateHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
@@ -22,11 +22,11 @@ import activityProp from "../PropTypes/activityPropType";
 import bookingStatusProp from "../PropTypes/bookingStatusPropType";
 import {
   BOOKING_STEP_TRIP_INFORMATION,
-  BOOKING_STEP_ACTIVITY_LIST,
-  BOOKING_STEP_HOTEL_LIST,
-  BOOKING_STEP_SERVICE_LIST,
+  BOOKING_STEP_ACTIVITIES,
+  BOOKING_STEP_HOTELS,
+  BOOKING_STEP_SERVICES,
   BOOKING_STEP_CONFIRM,
-  BOOKING_STEP_LIST
+  BOOKING_STEPS
 } from "./../../schema";
 
 const styles = theme => ({
@@ -51,22 +51,22 @@ const BOOKING_VIEW_QUERY = gql`
       email
       phone
       dateActivitySelected
-      dateActivityList {
+      dateActivities {
         dateString
         name
       }
     }
-    activityList {
+    activities {
       name
       shortDescription
       description
-      imageList {
+      images {
         isThumbnail
         filePath
         fileName
         url
       }
-      translationList {
+      translations {
         language
         name
         shortDescription
@@ -89,7 +89,7 @@ const enhance = flow(
   withStyles(styles),
   withQuery(BOOKING_VIEW_QUERY, undefined, undefined),
   withMutation(BOOKING_VIEW_MUTATION, undefined),
-  withStepHelper(BOOKING_STEP_LIST)
+  withStepHelper(BOOKING_STEPS)
 );
 
 class BookingView extends Component {
@@ -101,20 +101,20 @@ class BookingView extends Component {
           toDateString,
           email,
           phone,
-          dateActivityList
+          dateActivities
         }
       }
     } = this.props;
-    const dateList = map(getDateList(fromDateString, toDateString), date => {
+    const dates = map(getDates(fromDateString, toDateString), date => {
       const dateString = getStringFromDate(date);
-      const activity = find(dateActivityList, ["dateString", dateString]);
+      const activity = find(dateActivities, ["dateString", dateString]);
       return {
         dateString: dateString,
         activity: activity ? { name: activity.name } : null
       };
     });
 
-    return { booking: { email, phone, dateList } };
+    return { booking: { email, phone, dates } };
   };
 
   updateBookingStatus = valueObject => {
@@ -194,7 +194,7 @@ class BookingView extends Component {
   };
 
   renderStepperContent = () => {
-    const { bookingStatus, activityList } = this.props.data;
+    const { bookingStatus, activities } = this.props.data;
     const { activeStep } = bookingStatus;
     const commonProps = {
       bookingStatus,
@@ -206,16 +206,13 @@ class BookingView extends Component {
     switch (activeStep) {
       case BOOKING_STEP_TRIP_INFORMATION:
         return <BookingStepTripInformation {...commonProps} />;
-      case BOOKING_STEP_ACTIVITY_LIST:
+      case BOOKING_STEP_ACTIVITIES:
         return (
-          <BookingStepActivityList
-            {...commonProps}
-            activityList={activityList}
-          />
+          <BookingStepActivityList {...commonProps} activities={activities} />
         );
-      case BOOKING_STEP_HOTEL_LIST:
+      case BOOKING_STEP_HOTELS:
         return this.renderStepUnderConstruction();
-      case BOOKING_STEP_SERVICE_LIST:
+      case BOOKING_STEP_SERVICES:
         return this.renderStepUnderConstruction();
       case BOOKING_STEP_CONFIRM:
         return (
@@ -253,7 +250,7 @@ class BookingView extends Component {
 
 const dataProp = PropTypes.shape({
   bookingStatus: bookingStatusProp,
-  activityList: PropTypes.arrayOf(activityProp).isRequired
+  activities: PropTypes.arrayOf(activityProp).isRequired
 });
 
 BookingView.propTypes = {

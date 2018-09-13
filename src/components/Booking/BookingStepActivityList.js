@@ -10,6 +10,7 @@ import withMutation from "../hoc/withMutation";
 
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
 import DateItemList from "./DateItemList";
 import ActivityList from "../Activity/ActivityList";
 
@@ -55,14 +56,14 @@ class BookingStepActivityList extends Component {
     });
   };
 
-  handleActivityAdd = name => this.props.mutate({ variables: { name } });
+  handleAddActivity = name => this.props.mutate({ variables: { name } });
 
   findActivity = () => {
     const {
-      bookingStatus: { dateActivitySelected, dateActivityList },
-      activityList
+      bookingStatus: { dateActivitySelected, dateActivities },
+      activities
     } = this.props;
-    return findItem(dateActivitySelected, dateActivityList, activityList);
+    return findItem(dateActivitySelected, dateActivities, activities);
   };
 
   findActivityTranslation = () => {
@@ -93,21 +94,33 @@ class BookingStepActivityList extends Component {
     );
   };
 
+  renderCardActions = (classes, activity) => {
+    const { t } = this.props;
+    <Button
+      size="small"
+      color="primary"
+      className={classes.button}
+      onClick={() => this.handleAddActivity(activity.name)}
+    >
+      {t("bookingButtonAdd")}
+    </Button>;
+  };
+
   render() {
     const {
       classes,
       renderStepperActionGroup,
       bookingStatus: {
         dateActivitySelected,
-        dateActivityList,
+        dateActivities,
         fromDateString,
         toDateString
       },
-      activityList
+      activities
     } = this.props;
 
-    const handleActivityAdd = dateActivitySelected
-      ? this.handleActivityAdd
+    const renderCardActions = dateActivitySelected
+      ? this.renderCardActions
       : null;
     return (
       <div className={classes.root}>
@@ -115,8 +128,8 @@ class BookingStepActivityList extends Component {
           fromDateString={fromDateString}
           toDateString={toDateString}
           dateItemSelected={dateActivitySelected}
-          dateItemList={dateActivityList}
-          itemList={activityList}
+          dateItems={dateActivities}
+          items={activities}
           handleDateItemSelect={this.handleDateActivitySelect}
         />
         <Divider className={classes.divider} />
@@ -124,8 +137,8 @@ class BookingStepActivityList extends Component {
         <div className={classes.group}>{renderStepperActionGroup()}</div>
         <Divider className={classes.divider} />
         <ActivityList
-          activityList={activityList}
-          handleActivityAdd={handleActivityAdd}
+          activities={activities}
+          renderCardActions={renderCardActions}
         />
       </div>
     );
@@ -138,7 +151,7 @@ BookingStepActivityList.propTypes = {
   t: PropTypes.func.isRequired,
   mutate: PropTypes.func.isRequired,
   bookingStatus: bookingStatusProp.isRequired,
-  activityList: PropTypes.arrayOf(activityProp).isRequired,
+  activities: PropTypes.arrayOf(activityProp).isRequired,
   renderStepperActionGroup: PropTypes.func.isRequired,
   updateBookingStatus: PropTypes.func.isRequired
 };

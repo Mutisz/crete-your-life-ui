@@ -18,8 +18,8 @@ const activityProp = PropTypes.shape({
   name: PropTypes.string.isRequired,
   shortDescription: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  imageList: PropTypes.arrayOf(imageProp),
-  translationList: PropTypes.arrayOf(translationProp)
+  images: PropTypes.arrayOf(imageProp),
+  translations: PropTypes.arrayOf(translationProp)
 });
 
 export default activityProp;

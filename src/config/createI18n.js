@@ -5,7 +5,7 @@ import { reactI18nextModule } from "react-i18next";
 
 export const LANGUAGE_EN = "en";
 export const LANGUAGE_PL = "pl";
-export const LANGUAGE_LIST = {
+export const LANGUAGES = {
   [LANGUAGE_EN]: "English",
   [LANGUAGE_PL]: "Polski"
 };
@@ -17,7 +17,7 @@ const createI18n = () =>
     .use(reactI18nextModule)
     .init({
       fallbackLng: "en",
-      whitelist: Object.keys(LANGUAGE_LIST),
+      whitelist: Object.keys(LANGUAGES),
       ns: ["translations"],
       defaultNS: "translations",
       interpolation: {

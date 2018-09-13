@@ -50,7 +50,7 @@ const NavigationMenu = ({ classes, t }) => (
       component={Link}
       variant="contained"
       className={classes.button}
-      to={"/activityList"}
+      to={"/activities"}
     >
       {t("activities")}
     </Button>

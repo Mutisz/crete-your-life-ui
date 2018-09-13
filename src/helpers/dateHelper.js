@@ -16,7 +16,7 @@ export const getDateFromString = dateString =>
 
 export const getStringFromDate = date => (date ? date.toISOString() : null);
 
-export const getDateList = (fromDate, toDate) =>
+export const getDates = (fromDate, toDate) =>
   eachDayOfInterval({
     start: fromDate,
     end: toDate

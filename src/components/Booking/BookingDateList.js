@@ -74,9 +74,7 @@ class BookingDateList extends Component {
     );
   };
 
-  render = () => (
-    <Fragment>{map(this.props.dateList, this.renderDate)}</Fragment>
-  );
+  render = () => <Fragment>{map(this.props.dates, this.renderDate)}</Fragment>;
 }
 
 BookingDateList.propTypes = {

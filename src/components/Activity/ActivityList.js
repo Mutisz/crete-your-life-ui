@@ -16,13 +16,13 @@ const styles = {
 
 const enhance = withStyles(styles);
 
-const ActivityList = ({ classes, activityList, handleActivityAdd }) => (
+const ActivityList = ({ classes, activities, renderCardActions }) => (
   <div className={classes.root}>
-    {activityList.map(activity => (
+    {activities.map(activity => (
       <ActivityCard
         key={activity.name}
         activity={activity}
-        handleActivityAdd={handleActivityAdd}
+        renderCardActions={renderCardActions}
       />
     ))}
   </div>
@@ -30,8 +30,8 @@ const ActivityList = ({ classes, activityList, handleActivityAdd }) => (
 
 ActivityList.propTypes = {
   classes: PropTypes.object.isRequired,
-  activityList: PropTypes.arrayOf(activityProp).isRequired,
-  handleActivityAdd: PropTypes.func
+  activities: PropTypes.arrayOf(activityProp).isRequired,
+  renderCardActions: PropTypes.func
 };
 
 export default enhance(ActivityList);

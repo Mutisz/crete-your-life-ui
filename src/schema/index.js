@@ -1,15 +1,15 @@
 import gql from "graphql-tag";
 
 export const BOOKING_STEP_TRIP_INFORMATION = "bookingStepTripInformation";
-export const BOOKING_STEP_ACTIVITY_LIST = "bookingStepActivityList";
-export const BOOKING_STEP_HOTEL_LIST = "bookingStepHotelList";
-export const BOOKING_STEP_SERVICE_LIST = "bookingStepServiceList";
+export const BOOKING_STEP_ACTIVITIES = "bookingStepActivities";
+export const BOOKING_STEP_HOTELS = "bookingStepHotels";
+export const BOOKING_STEP_SERVICES = "bookingStepServices";
 export const BOOKING_STEP_CONFIRM = "bookingStepConfirm";
-export const BOOKING_STEP_LIST = [
+export const BOOKING_STEPS = [
   BOOKING_STEP_TRIP_INFORMATION,
-  BOOKING_STEP_ACTIVITY_LIST,
-  BOOKING_STEP_HOTEL_LIST,
-  BOOKING_STEP_SERVICE_LIST,
+  BOOKING_STEP_ACTIVITIES,
+  BOOKING_STEP_HOTELS,
+  BOOKING_STEP_SERVICES,
   BOOKING_STEP_CONFIRM
 ];
 
@@ -17,24 +17,19 @@ export const defaults = {
   bookingStatus: {
     __typename: "BookingStatus",
     activeStep: BOOKING_STEP_TRIP_INFORMATION,
-    fromDateString: "2018-09-01",
-    toDateString: "2018-09-10",
+    fromDateString: null,
+    toDateString: null,
     personCount: 1,
     dateActivitySelected: null,
-    dateActivityList: [],
+    dateActivities: [],
     email: null,
     phone: null
-  },
-  preferenceList: {
-    __typename: "PreferenceList",
-    language: "en",
-    currency: "eur"
   }
 };
 
 export const typeDefs = `
   enum BookingStep {
-    ${BOOKING_STEP_LIST.join("\n")}
+    ${BOOKING_STEPS.join("\n")}
   }
 
   type BookingStatus {
@@ -45,17 +40,12 @@ export const typeDefs = `
     email: String
     phone: String
     dateActivitySelected: String
-    dateActivityList: [DateItem]!
+    dateActivities: [DateItem]!
   }
 
   type DateItem {
     dateString: String!
     name: String!
-  }
-
-  type PreferenceList {
-    language: String!
-    currency: String!
   }
 
   type Query {
@@ -67,11 +57,11 @@ export const typeDefs = `
   }
 `;
 
-const GET_DATE_ACTIVITY_LIST = gql`
-  query GetDateActivityList {
+const GET_DATE_ACTIVITIES = gql`
+  {
     bookingStatus @client {
       dateActivitySelected
-      dateActivityList {
+      dateActivities {
         dateString
         name
       }
@@ -83,7 +73,7 @@ export const resolvers = {
   Mutation: {
     addDateActivity: (_, { name }, { cache }) => {
       const { bookingStatus } = cache.readQuery({
-        query: GET_DATE_ACTIVITY_LIST
+        query: GET_DATE_ACTIVITIES
       });
       if (!bookingStatus.dateActivitySelected) {
         throw new Error("Adding activity to unspecified date");
@@ -97,9 +87,7 @@ export const resolvers = {
       const data = {
         bookingStatus: {
           ...bookingStatus,
-          dateActivityList: bookingStatus.dateActivityList.concat([
-            newDateActivity
-          ])
+          dateActivities: bookingStatus.dateActivities.concat([newDateActivity])
         }
       };
       cache.writeData({ data });

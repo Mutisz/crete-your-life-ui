@@ -23,7 +23,7 @@ const App = ({ i18n }) => {
       <Navigation>
         <Switch>
           <Route path="/" component={BookingView} exact />
-          <Route path="/activityList" component={ActivityListView} />
+          <Route path="/activities" component={ActivityListView} />
           <Route path="/booking/:id" component={BookingConfirmationView} />
         </Switch>
       </Navigation>

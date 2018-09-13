@@ -28,7 +28,7 @@ const Stepper = props => {
     <Fragment>
       <Hidden smDown>
         <MaterialStepper activeStep={stepHelper.getStepIndex(activeStep)}>
-          {stepHelper.getStepList().map(step => (
+          {stepHelper.getSteps().map(step => (
             <Step key={step}>
               <StepLabel>{t(step)}</StepLabel>
             </Step>
@@ -51,7 +51,7 @@ Stepper.propTypes = {
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   stepHelper: PropTypes.shape({
-    getStepList: PropTypes.func.isRequired,
+    getSteps: PropTypes.func.isRequired,
     getStepIndex: PropTypes.func.isRequired
   }),
   activeStep: PropTypes.string.isRequired

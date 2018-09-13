@@ -31,12 +31,12 @@ const GET_BOOKING_CONFIRMATION = gql`
       id
       email
       phone
-      dateList {
-        dateString
+      dates {
+        date
         activity {
           name
           shortDescription
-          translationList {
+          translations {
             name
             shortDescription
           }
@@ -55,7 +55,7 @@ const enhance = flow(
 );
 
 const BookingConfirmationView = ({ classes, t, data: { booking } }) => {
-  const sortedDateList = sortByDateAsc(booking.dateList);
+  const sortedDates = sortByDateAsc(booking.dates);
   return (
     <div className={classes.root}>
       <Paper className={classes.section} square>
@@ -81,7 +81,7 @@ const BookingConfirmationView = ({ classes, t, data: { booking } }) => {
           </table>
         </Typography>
       </Paper>
-      <BookingDateList dateList={sortedDateList} />
+      <BookingDateList dates={sortedDates} />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { curry } from "lodash";
 
-const getStepIndex = curry((stepList, step) => {
-  const stepIndex = stepList.indexOf(step);
+const getStepIndex = curry((steps, step) => {
+  const stepIndex = steps.indexOf(step);
   if (stepIndex < 0) {
     throw new Error(`Step "${step}" is not a valid step`);
   }
@@ -9,39 +9,37 @@ const getStepIndex = curry((stepList, step) => {
   return stepIndex;
 });
 
-const isStepFirst = curry(
-  (stepList, step) => getStepIndex(stepList, step) === 0
-);
+const isStepFirst = curry((steps, step) => getStepIndex(steps, step) === 0);
 
 const isStepLast = curry(
-  (stepList, step) => getStepIndex(stepList, step) === stepList.length - 1
+  (steps, step) => getStepIndex(steps, step) === steps.length - 1
 );
 
-const getStepPrevious = curry((stepList, step) => {
-  const stepIndex = getStepIndex(stepList, step);
-  if (isStepFirst(stepList, step)) {
+const getStepPrevious = curry((steps, step) => {
+  const stepIndex = getStepIndex(steps, step);
+  if (isStepFirst(steps, step)) {
     throw new Error(`Cannot get previous step - "${step}" is the first step`);
   }
 
-  return stepList[stepIndex - 1];
+  return steps[stepIndex - 1];
 });
 
-const getStepNext = curry((stepList, step) => {
-  const stepIndex = getStepIndex(stepList, step);
-  if (isStepLast(stepList, step)) {
+const getStepNext = curry((steps, step) => {
+  const stepIndex = getStepIndex(steps, step);
+  if (isStepLast(steps, step)) {
     throw new Error(`Cannot get next step - "${step}" is the last step`);
   }
 
-  return stepList[stepIndex + 1];
+  return steps[stepIndex + 1];
 });
 
-const createStepHelper = stepList => ({
-  getStepList: () => stepList,
-  getStepIndex: getStepIndex(stepList),
-  isStepFirst: isStepFirst(stepList),
-  isStepLast: isStepLast(stepList),
-  getStepPrevious: getStepPrevious(stepList),
-  getStepNext: getStepNext(stepList)
+const createStepHelper = steps => ({
+  getSteps: () => steps,
+  getStepIndex: getStepIndex(steps),
+  isStepFirst: isStepFirst(steps),
+  isStepLast: isStepLast(steps),
+  getStepPrevious: getStepPrevious(steps),
+  getStepNext: getStepNext(steps)
 });
 
 export default createStepHelper;

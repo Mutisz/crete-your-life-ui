@@ -23,17 +23,17 @@ const styles = theme => ({
 
 const ACTIVITY_LIST_VIEW_QUERY = gql`
   {
-    activityList {
+    activities {
       name
       shortDescription
       description
-      imageList {
+      images {
         isThumbnail
         filePath
         fileName
         url
       }
-      translationList {
+      translations {
         language
         name
         shortDescription
@@ -48,10 +48,10 @@ const enhance = flow(
   withQuery(ACTIVITY_LIST_VIEW_QUERY, undefined, undefined)
 );
 
-const ActivityListView = ({ classes, data: { activityList } }) => (
+const ActivityListView = ({ classes, data: { activities } }) => (
   <div className={classes.root}>
     <Paper className={classes.section} square>
-      <ActivityList activityList={activityList} />
+      <ActivityList activities={activities} />
     </Paper>
   </div>
 );
@@ -59,7 +59,7 @@ const ActivityListView = ({ classes, data: { activityList } }) => (
 ActivityListView.propTypes = {
   classes: PropTypes.object.isRequired,
   data: PropTypes.shape({
-    activityList: PropTypes.arrayOf(activityProp).isRequired
+    activities: PropTypes.arrayOf(activityProp).isRequired
   })
 };
 
