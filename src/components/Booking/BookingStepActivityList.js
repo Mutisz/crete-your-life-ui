@@ -96,14 +96,16 @@ class BookingStepActivityList extends Component {
 
   renderCardActions = (classes, activity) => {
     const { t } = this.props;
-    <Button
-      size="small"
-      color="primary"
-      className={classes.button}
-      onClick={() => this.handleAddActivity(activity.name)}
-    >
-      {t("bookingButtonAdd")}
-    </Button>;
+    return (
+      <Button
+        size="small"
+        color="primary"
+        className={classes.button}
+        onClick={() => this.handleAddActivity(activity.name)}
+      >
+        {t("bookingButtonAdd")}
+      </Button>
+    );
   };
 
   render() {

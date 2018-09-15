@@ -85,8 +85,8 @@ class DateRange extends Component {
 DateRange.propTypes = {
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  fromDateString: PropTypes.string.isRequired,
-  toDateString: PropTypes.string.isRequired,
+  fromDateString: PropTypes.string,
+  toDateString: PropTypes.string,
   handleFromDateChange: PropTypes.func.isRequired,
   handleToDateChange: PropTypes.func.isRequired
 };

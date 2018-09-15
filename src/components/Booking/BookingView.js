@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, map, find } from "lodash";
-import { getDates, getStringFromDate } from "../../helpers/dateHelper";
+import {
+  getDates,
+  getStringFromDate,
+  getDateFromString
+} from "../../helpers/dateHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
@@ -77,9 +81,9 @@ const BOOKING_VIEW_QUERY = gql`
 `;
 
 const BOOKING_VIEW_MUTATION = gql`
-  mutation AddBooking($booking: BookingInput!) {
-    addBooking(booking: $booking) {
-      id
+  mutation CreateBooking($booking: BookingCreateInput!) {
+    createBooking(data: $booking) {
+      number
     }
   }
 `;
@@ -93,28 +97,29 @@ const enhance = flow(
 );
 
 class BookingView extends Component {
+  getBookingInputDate = date => {
+    const {
+      data: {
+        bookingStatus: { dateActivities }
+      }
+    } = this.props;
+    const dateString = getStringFromDate(date);
+    const activity = find(dateActivities, ["dateString", dateString]);
+    return {
+      dateString: dateString,
+      activityName: activity ? activity.name : null
+    };
+  };
+
   getBookingInput = () => {
     const {
       data: {
-        bookingStatus: {
-          fromDateString,
-          toDateString,
-          email,
-          phone,
-          dateActivities
-        }
+        bookingStatus: { fromDateString, toDateString, email, phone }
       }
     } = this.props;
-    const dates = map(getDates(fromDateString, toDateString), date => {
-      const dateString = getStringFromDate(date);
-      const activity = find(dateActivities, ["dateString", dateString]);
-      return {
-        dateString: dateString,
-        activity: activity ? { name: activity.name } : null
-      };
-    });
-
-    return { booking: { email, phone, dates } };
+    const dates = getDates(fromDateString, toDateString);
+    const bookingDates = map(dates, this.getBookingInputDate);
+    return { booking: { email, phone, dates: bookingDates } };
   };
 
   updateBookingStatus = valueObject => {
@@ -158,7 +163,11 @@ class BookingView extends Component {
   handleConfirm = () => {
     const { mutate } = this.props;
     const variables = this.getBookingInput();
-    mutate({ variables }).then(this.handleConfirmSuccess);
+    mutate({ variables })
+      .then(this.handleConfirmSuccess)
+      .catch(res => {
+        console.log("err");
+      });
   };
 
   handleConfirmSuccess = ({
