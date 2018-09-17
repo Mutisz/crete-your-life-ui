@@ -2,11 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, map, find } from "lodash";
-import {
-  getDates,
-  getStringFromDate,
-  getDateFromString
-} from "../../helpers/dateHelper";
+import { getDates, getStringFromDate } from "../../helpers/dateHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
@@ -107,7 +103,7 @@ class BookingView extends Component {
     const activity = find(dateActivities, ["dateString", dateString]);
     return {
       dateString: dateString,
-      activityName: activity ? activity.name : null
+      activity: activity ? activity.name : null
     };
   };
 
@@ -163,20 +159,16 @@ class BookingView extends Component {
   handleConfirm = () => {
     const { mutate } = this.props;
     const variables = this.getBookingInput();
-    mutate({ variables })
-      .then(this.handleConfirmSuccess)
-      .catch(res => {
-        console.log("err");
-      });
+    mutate({ variables }).then(this.handleConfirmSuccess);
   };
 
   handleConfirmSuccess = ({
     data: {
-      addBooking: { id }
+      createBooking: { number }
     }
   }) => {
     const { history } = this.props;
-    history.push(`/booking/${id}`);
+    history.push(`/booking/${number}`);
   };
 
   renderStepUnderConstruction = () => (

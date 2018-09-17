@@ -32,31 +32,31 @@ const enhance = flow(
 
 class BookingDateList extends Component {
   state = {
-    expandedDateString: null
+    expandedDate: null
   };
 
-  handleExpand = dateString => (event, expandedDateString) => {
+  handleExpand = date => (event, expandedDate) => {
     this.setState({
-      expandedDateString: expandedDateString ? dateString : false
+      expandedDate: expandedDate ? date : false
     });
   };
 
-  renderDate = date => {
+  renderBookingDate = bookingDate => {
     const { classes, i18n, t } = this.props;
-    const { expandedDateString } = this.state;
-    const activity = date.activity
-      ? findItemTranslation(date.activity, i18n.language)
+    const { expandedDate } = this.state;
+    const activity = bookingDate.activity
+      ? findItemTranslation(bookingDate.activity, i18n.language)
       : null;
     const isEmpty = !activity;
     return (
       <ExpansionPanel
-        key={date.dateString}
-        expanded={expandedDateString === date.dateString}
-        onChange={this.handleExpand(date.dateString)}
+        key={bookingDate.date}
+        expanded={expandedDate === bookingDate.date}
+        onChange={this.handleExpand(bookingDate.date)}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading} variant="body2">
-            {formatDate(date.dateString, i18n.language)}
+            {formatDate(bookingDate.date, i18n.language)}
           </Typography>
           {activity ? (
             <Typography className={classes.secondaryHeading} variant="body1">
@@ -67,14 +67,16 @@ class BookingDateList extends Component {
         <ExpansionPanelDetails>
           <Typography variant="body1">
             {activity ? activity.shortDescription : null}
-            {isEmpty ? t("bookingDateEmpty") : null}
+            {isEmpty ? t("bookingNoActivitySelected") : null}
           </Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     );
   };
 
-  render = () => <Fragment>{map(this.props.dates, this.renderDate)}</Fragment>;
+  render = () => (
+    <Fragment>{map(this.props.dates, this.renderBookingDate)}</Fragment>
+  );
 }
 
 BookingDateList.propTypes = {

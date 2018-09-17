@@ -24,7 +24,7 @@ const App = ({ i18n }) => {
         <Switch>
           <Route path="/" component={BookingView} exact />
           <Route path="/activities" component={ActivityListView} />
-          <Route path="/booking/:id" component={BookingConfirmationView} />
+          <Route path="/booking/:number" component={BookingConfirmationView} />
         </Switch>
       </Navigation>
     </MuiPickersUtilsProvider>

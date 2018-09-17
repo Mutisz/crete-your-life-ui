@@ -26,9 +26,9 @@ const styles = theme => ({
 });
 
 const GET_BOOKING_CONFIRMATION = gql`
-  query GetBookingConfirmation($id: ID!) {
-    booking(id: $id) {
-      id
+  query GetBookingConfirmation($number: String!) {
+    booking(number: $number) {
+      number
       email
       phone
       dates {
@@ -50,7 +50,7 @@ const enhance = flow(
   withStyles(styles),
   translate(),
   withQuery(GET_BOOKING_CONFIRMATION, {}, props => ({
-    id: props.match.params.id
+    number: props.match.params.number
   }))
 );
 
@@ -60,21 +60,21 @@ const BookingConfirmationView = ({ classes, t, data: { booking } }) => {
     <div className={classes.root}>
       <Paper className={classes.section} square>
         <Typography variant="headline" gutterBottom>
-          {t("bookingConfirmationTitle", { id: booking.id })}
+          {t("bookingConfirmationTitle", { id: booking.number })}
         </Typography>
         <Typography variant="body1">
           <table className={classes.bookingInformation}>
             <tbody>
               <tr>
-                <th scope="row">{t("bookingEmail")}</th>
+                <th scope="row">{t("inputEmail")}</th>
                 <td>{booking.email}</td>
               </tr>
               <tr>
-                <th scope="row">{t("bookingPhone")}</th>
+                <th scope="row">{t("inputPhone")}</th>
                 <td>{booking.phone}</td>
               </tr>
               <tr>
-                <th scope="row">{t("bookingPersonCount")}</th>
+                <th scope="row">{t("inputPersonCount")}</th>
                 <td>{booking.personCount}</td>
               </tr>
             </tbody>
