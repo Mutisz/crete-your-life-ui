@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
-import { flow } from "lodash";
+import { flow, map } from "lodash";
 import { findItem, findItemTranslation } from "../../helpers/bookingHelper";
+import { getDateFromString, formatDateIso } from "../../helpers/dateHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
+import withQuery from "../hoc/withQuery";
 import withMutation from "../hoc/withMutation";
 
 import Typography from "@material-ui/core/Typography";
@@ -30,7 +32,15 @@ const styles = theme => ({
   }
 });
 
-const ADD_DATE_ACTIVITY = gql`
+const BOOKING_STEP_ACTIVITY_LIST_QUERY = gql`
+  query GetBookingDates($fromDate: DateTime!, $toDate: DateTime!) {
+    bookingDates(fromDate: $fromDate, toDate: $toDate) {
+      date
+    }
+  }
+`;
+
+const BOOKING_STEP_ACTIVITY_LIST_MUTATION = gql`
   mutation AddDateActivity($name: String!) {
     addDateActivity(name: $name) @client {
       dateString
@@ -42,7 +52,16 @@ const ADD_DATE_ACTIVITY = gql`
 const enhance = flow(
   withStyles(styles),
   translate(),
-  withMutation(ADD_DATE_ACTIVITY, undefined)
+  withQuery(BOOKING_STEP_ACTIVITY_LIST_QUERY, {}, props => {
+    const {
+      bookingStatus: { fromDateString, toDateString }
+    } = props;
+    return {
+      fromDate: getDateFromString(fromDateString),
+      toDate: getDateFromString(toDateString)
+    };
+  }),
+  withMutation(BOOKING_STEP_ACTIVITY_LIST_MUTATION, undefined)
 );
 
 class BookingStepActivityList extends Component {
@@ -112,6 +131,7 @@ class BookingStepActivityList extends Component {
     const {
       classes,
       renderStepperActionGroup,
+      data: { bookingDates },
       bookingStatus: {
         dateActivitySelected,
         dateActivities,
@@ -124,12 +144,16 @@ class BookingStepActivityList extends Component {
     const renderCardActions = dateActivitySelected
       ? this.renderCardActions
       : null;
+    const dateItemsDisabled = map(bookingDates, bookingDate =>
+      formatDateIso(bookingDate.date)
+    );
     return (
       <div className={classes.root}>
         <DateItemList
           fromDateString={fromDateString}
           toDateString={toDateString}
           dateItemSelected={dateActivitySelected}
+          dateItemsDisabled={dateItemsDisabled}
           dateItems={dateActivities}
           items={activities}
           handleDateItemSelect={this.handleDateActivitySelect}
@@ -152,6 +176,9 @@ BookingStepActivityList.propTypes = {
   i18n: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   mutate: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    bookingDates: PropTypes.arrayOf(PropTypes.shape({ date: PropTypes.string }))
+  }),
   bookingStatus: bookingStatusProp.isRequired,
   activities: PropTypes.arrayOf(activityProp).isRequired,
   renderStepperActionGroup: PropTypes.func.isRequired,

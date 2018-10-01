@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { flow } from "lodash";
+import { flow, noop, find, map } from "lodash";
 import {
   formatDate,
   getStringFromDate,
@@ -37,6 +37,9 @@ const styles = theme => {
     listTile: {
       cursor: "pointer"
     },
+    listTileDisabled: {
+      cursor: "not-allowed"
+    },
     listTileBarTitle: {},
     listTileBarTitleSelected: {
       color: theme.palette.secondary.light
@@ -66,39 +69,61 @@ class DateItemList extends Component {
     return item ? findItemThumbnailUrl(item) : PLACEHOLDER_URL;
   };
 
+  isDateItemSelected = dateString => {
+    const { dateItemSelected } = this.props;
+    return dateItemSelected ? dateString === dateItemSelected : false;
+  };
+
+  isDateItemDisabled = dateString => {
+    const { dateItemsDisabled } = this.props;
+    return find(dateItemsDisabled, dateItem => dateItem === dateString) && true;
+  };
+
+  formatSubtitle = (itemTranslation, isDateItemDisabled) => {
+    const { t } = this.props;
+    if (isDateItemDisabled) {
+      return t("dateItemDisabled");
+    } else if (itemTranslation) {
+      return itemTranslation.name;
+    }
+
+    return null;
+  };
+
   renderDateItem = date => {
-    const {
-      classes,
-      i18n,
-      dateItemSelected,
-      handleDateItemSelect
-    } = this.props;
+    const { classes, i18n, handleDateItemSelect } = this.props;
     const dateString = getStringFromDate(date);
     const itemTranslation = this.findItemTranslationByDateString(dateString);
-    const isDateItemSelected = dateItemSelected
-      ? dateString === dateItemSelected
-      : false;
-    const tileBarClasses = {
-      title: isDateItemSelected
-        ? classes.listTileBarTitleSelected
-        : classes.listTileBarTitle
-    };
-
     const thumbnailUrl = this.findItemThumbnailUrlByDateString(dateString);
+    const isDateItemSelected = this.isDateItemSelected(dateString);
+    const isDateItemDisabled = this.isDateItemDisabled(dateString);
+
+    const tileNameClassName = isDateItemDisabled
+      ? classes.listTileDisabled
+      : classes.listTile;
+    const tileBarTitleClassName = isDateItemSelected
+      ? classes.listTileBarTitleSelected
+      : classes.listTileBarTitle;
+    const onClick = !isDateItemDisabled
+      ? () => handleDateItemSelect(dateString)
+      : noop;
+
     const title = formatDate(date, i18n.language);
-    const subtitle = itemTranslation ? itemTranslation.name : null;
+    const subtitle = this.formatSubtitle(itemTranslation, isDateItemDisabled);
 
     return (
       <GridListTile
         key={dateString}
-        className={classes.listTile}
-        onClick={() => handleDateItemSelect(dateString)}
+        className={tileNameClassName}
+        onClick={onClick}
       >
         <img src={thumbnailUrl} alt={title} />
         <GridListTileBar
           title={title}
           subtitle={subtitle}
-          classes={tileBarClasses}
+          classes={{
+            title: tileBarTitleClassName
+          }}
         />
       </GridListTile>
     );
@@ -111,7 +136,7 @@ class DateItemList extends Component {
     return (
       <div className={classes.root}>
         <GridList className={classes.list} cols={3}>
-          {dates.map(date => this.renderDateItem(date))}
+          {map(dates, date => this.renderDateItem(date))}
         </GridList>
       </div>
     );
@@ -121,9 +146,11 @@ class DateItemList extends Component {
 DateItemList.propTypes = {
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
   fromDateString: PropTypes.string.isRequired,
   toDateString: PropTypes.string.isRequired,
   dateItemSelected: PropTypes.string,
+  dateItemsDisabled: PropTypes.arrayOf(PropTypes.string),
   dateItems: PropTypes.arrayOf(dateItemProp).isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({ name: PropTypes.string.isRequired })

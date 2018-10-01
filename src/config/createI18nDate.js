@@ -7,6 +7,7 @@ import { LANGUAGE_EN, LANGUAGE_PL } from "./createI18n";
 
 export const DATE_FORMAT = "D MMM YYYY, dddd";
 export const DATE_FORMAT_SHORT = "D MMM, dd.";
+export const DATE_FORMAT_ISO = "YYYY-MM-DD";
 
 export const createI18nDateLocale = language => {
   switch (language) {

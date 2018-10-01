@@ -33,10 +33,11 @@ const enhance = flow(
 );
 
 class BookingStepTripInformation extends Component {
-  handleFromDateChange = fromDate =>
+  handleFromDateChange = fromDate => {
     this.props.updateBookingStatus({
       fromDateString: getStringFromDate(fromDate)
     });
+  };
 
   handleToDateChange = toDate =>
     this.props.updateBookingStatus({
