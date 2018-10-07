@@ -41,8 +41,8 @@ const BOOKING_STEP_ACTIVITY_LIST_QUERY = gql`
 `;
 
 const BOOKING_STEP_ACTIVITY_LIST_MUTATION = gql`
-  mutation AddDateActivity($name: String!) {
-    addDateActivity(name: $name) @client {
+  mutation UpdateSelectedDateActivity($name: String!) {
+    updateSelectedDateActivity(name: $name) @client {
       dateString
       name
     }

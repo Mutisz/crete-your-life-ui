@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import Mutation from "./Mutation";
 
 import { CURRENCIES, EUR } from "../config/consts/currencyConsts";
 
@@ -54,10 +54,10 @@ export const typeDefs = `
     email: String
     phone: String
     dateActivitySelected: String
-    dateActivities: [DateItem]!
+    dateActivities: [DateActivity]!
   }
 
-  type DateItem {
+  type DateActivity {
     dateString: String!
     name: String!
   }
@@ -76,45 +76,10 @@ export const typeDefs = `
   }
 
   type Mutation {
-    addDateActivity(activityName: String!): DateItem
-  }
-`;
-
-const GET_DATE_ACTIVITIES = gql`
-  {
-    bookingStatus @client {
-      dateActivitySelected
-      dateActivities {
-        dateString
-        name
-      }
-    }
+    updateSelectedDateActivity(activityName: String!): [DateActivity]
   }
 `;
 
 export const resolvers = {
-  Mutation: {
-    addDateActivity: (_, { name }, { cache }) => {
-      const { bookingStatus } = cache.readQuery({
-        query: GET_DATE_ACTIVITIES
-      });
-      if (!bookingStatus.dateActivitySelected) {
-        throw new Error("Adding activity to unspecified date");
-      }
-
-      const newDateActivity = {
-        __typename: "DateItem",
-        dateString: bookingStatus.dateActivitySelected,
-        name
-      };
-      const data = {
-        bookingStatus: {
-          ...bookingStatus,
-          dateActivities: bookingStatus.dateActivities.concat([newDateActivity])
-        }
-      };
-      cache.writeData({ data });
-      return newDateActivity;
-    }
-  }
+  Mutation
 };

@@ -126,14 +126,11 @@ class BookingView extends Component {
   };
 
   updateBookingStatus = valueObject => {
-    const {
-      client,
-      data: { bookingStatus }
-    } = this.props;
+    const { client } = this.props;
     client.writeData({
       data: {
         bookingStatus: {
-          ...bookingStatus,
+          __typename: "BookingStatus",
           ...valueObject
         }
       }
