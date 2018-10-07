@@ -3,12 +3,7 @@ import Backend from "i18next-xhr-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { reactI18nextModule } from "react-i18next";
 
-export const LANGUAGE_EN = "en";
-export const LANGUAGE_PL = "pl";
-export const LANGUAGES = {
-  [LANGUAGE_EN]: "English",
-  [LANGUAGE_PL]: "Polski"
-};
+import { LANGUAGES } from "./consts/languageConsts";
 
 const createI18n = () =>
   i18n

@@ -23,10 +23,17 @@ const styles = theme => ({
 
 const ACTIVITY_LIST_VIEW_QUERY = gql`
   {
+    preferences @client {
+      currency {
+        code
+        rate
+      }
+    }
     activities {
       name
       shortDescription
       description
+      basePricePerPerson
       images {
         isThumbnail
         filePath
@@ -45,13 +52,19 @@ const ACTIVITY_LIST_VIEW_QUERY = gql`
 
 const enhance = flow(
   withStyles(styles),
-  withQuery(ACTIVITY_LIST_VIEW_QUERY, undefined, undefined)
+  withQuery(ACTIVITY_LIST_VIEW_QUERY, {})
 );
 
-const ActivityListView = ({ classes, data: { activities } }) => (
+const ActivityListView = ({
+  classes,
+  data: {
+    preferences: { currency },
+    activities
+  }
+}) => (
   <div className={classes.root}>
     <Paper className={classes.section} square>
-      <ActivityList activities={activities} />
+      <ActivityList currency={currency} activities={activities} />
     </Paper>
   </div>
 );

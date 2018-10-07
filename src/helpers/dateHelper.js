@@ -1,10 +1,10 @@
 import { toDate, format, eachDayOfInterval } from "date-fns";
+import { createI18nDateLocale } from "../config/createI18nDate";
 import {
   DATE_FORMAT,
   DATE_FORMAT_SHORT,
-  DATE_FORMAT_ISO,
-  createI18nDateLocale
-} from "../config/createI18nDate";
+  DATE_FORMAT_ISO
+} from "../config/consts/dateConsts";
 
 export const formatDate = (date, language) =>
   format(date, DATE_FORMAT, { locale: createI18nDateLocale(language) });

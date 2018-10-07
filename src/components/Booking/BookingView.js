@@ -56,10 +56,17 @@ const BOOKING_VIEW_QUERY = gql`
         name
       }
     }
+    preferences @client {
+      currency {
+        code
+        rate
+      }
+    }
     activities {
       name
       shortDescription
       description
+      basePricePerPerson
       images {
         isThumbnail
         filePath
@@ -87,7 +94,7 @@ const BOOKING_VIEW_MUTATION = gql`
 const enhance = flow(
   withRouter,
   withStyles(styles),
-  withQuery(BOOKING_VIEW_QUERY, undefined, undefined),
+  withQuery(BOOKING_VIEW_QUERY, {}),
   withMutation(BOOKING_VIEW_MUTATION, undefined),
   withStepHelper(BOOKING_STEPS)
 );
@@ -102,7 +109,7 @@ class BookingView extends Component {
     const dateString = getStringFromDate(date);
     const activity = find(dateActivities, ["dateString", dateString]);
     return {
-      dateString: dateString,
+      date: date,
       activity: activity ? activity.name : null
     };
   };
@@ -195,9 +202,10 @@ class BookingView extends Component {
   };
 
   renderStepperContent = () => {
-    const { bookingStatus, activities } = this.props.data;
+    const { preferences, bookingStatus, activities } = this.props.data;
     const { activeStep } = bookingStatus;
     const commonProps = {
+      preferences,
       bookingStatus,
       renderStepperActionGroup: this.renderStepperActionGroup,
       updateBookingStatus: this.updateBookingStatus,

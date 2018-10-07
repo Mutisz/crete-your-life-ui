@@ -14,7 +14,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import MenuIcon from "@material-ui/icons/Menu";
 import IconButton from "@material-ui/core/IconButton";
 import NavigationMenu from "./NavigationMenu";
-import SettingsDialog from "../dialogs/SettingsDialog";
+import PreferencesDialog from "../Preferences/PreferencesDialog";
 
 const styles = theme => {
   const navigationWidth = 240;
@@ -103,7 +103,7 @@ class NavigationContainer extends Component {
               <Route path="/activities" render={() => t("activities")} />
               <Route path="/booking" render={() => t("bookingConfirmation")} />
             </Typography>
-            <SettingsDialog />
+            <PreferencesDialog />
           </Toolbar>
         </AppBar>
         <Hidden mdUp>

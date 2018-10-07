@@ -49,17 +49,21 @@ const BOOKING_STEP_ACTIVITY_LIST_MUTATION = gql`
   }
 `;
 
+const propsToVariables = props => {
+  const {
+    bookingStatus: { fromDateString, toDateString }
+  } = props;
+  return {
+    fromDate: getDateFromString(fromDateString),
+    toDate: getDateFromString(toDateString)
+  };
+};
+
 const enhance = flow(
   withStyles(styles),
   translate(),
-  withQuery(BOOKING_STEP_ACTIVITY_LIST_QUERY, {}, props => {
-    const {
-      bookingStatus: { fromDateString, toDateString }
-    } = props;
-    return {
-      fromDate: getDateFromString(fromDateString),
-      toDate: getDateFromString(toDateString)
-    };
+  withQuery(BOOKING_STEP_ACTIVITY_LIST_QUERY, {
+    propsToVariables
   }),
   withMutation(BOOKING_STEP_ACTIVITY_LIST_MUTATION, undefined)
 );
@@ -130,7 +134,7 @@ class BookingStepActivityList extends Component {
   render() {
     const {
       classes,
-      renderStepperActionGroup,
+      preferences: { currency },
       data: { bookingDates },
       bookingStatus: {
         dateActivitySelected,
@@ -138,7 +142,8 @@ class BookingStepActivityList extends Component {
         fromDateString,
         toDateString
       },
-      activities
+      activities,
+      renderStepperActionGroup
     } = this.props;
 
     const renderCardActions = dateActivitySelected
@@ -163,6 +168,7 @@ class BookingStepActivityList extends Component {
         <div className={classes.group}>{renderStepperActionGroup()}</div>
         <Divider className={classes.divider} />
         <ActivityList
+          currency={currency}
           activities={activities}
           renderCardActions={renderCardActions}
         />

@@ -1,5 +1,7 @@
 {
+  "preferences": "Preferencje",
   "language": "Język",
+  "currency": "Waluta",
 
   "booking": "Rezerwacja",
   "activities": "Aktywności",
@@ -21,6 +23,8 @@
 
   "validationDateRange": "Błędny zakres dat",
   "validationRequired": "Pole wymagane",
+
+  "dateItemDisabled": "Termin niedostępny",
 
   "bookingButtonAdd": "Dodaj do rezerwacji",
   "bookingStepTripInformation": "Informacje",

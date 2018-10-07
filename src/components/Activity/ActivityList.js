@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { map } from "lodash";
 
 import { withStyles } from "@material-ui/core/styles";
 
@@ -16,11 +17,12 @@ const styles = {
 
 const enhance = withStyles(styles);
 
-const ActivityList = ({ classes, activities, renderCardActions }) => (
+const ActivityList = ({ classes, currency, activities, renderCardActions }) => (
   <div className={classes.root}>
-    {activities.map(activity => (
+    {map(activities, activity => (
       <ActivityCard
         key={activity.name}
+        currency={currency}
         activity={activity}
         renderCardActions={renderCardActions}
       />

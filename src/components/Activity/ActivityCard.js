@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { flow } from "lodash";
+import { flow, get } from "lodash";
 import {
   findItemTranslation,
   findItemThumbnailUrl
 } from "../../helpers/bookingHelper";
+import { getCurrencyLocale, convert } from "../../helpers/currencyHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -15,6 +16,7 @@ import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
+import Currency from "react-currency-formatter";
 
 import activityProp from "../PropTypes/activityPropType";
 
@@ -31,6 +33,14 @@ const styles = theme => ({
     position: "absolute",
     bottom: 0,
     width: "100%"
+  },
+  price: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: theme.palette.secondary.main
   },
   divider: {
     position: "absolute",
@@ -50,9 +60,17 @@ const enhance = flow(
   translate()
 );
 
-const ActivityCard = ({ classes, i18n, activity, renderCardActions }) => {
+const ActivityCard = ({
+  classes,
+  i18n,
+  currency: { code, rate },
+  activity,
+  renderCardActions
+}) => {
+  const { language } = i18n;
+  const basePrice = get(activity, "basePricePerPerson", null);
   const url = findItemThumbnailUrl(activity);
-  const activityTranslation = findItemTranslation(activity, i18n.language);
+  const activityTranslation = findItemTranslation(activity, language);
   return (
     <Card className={classes.root}>
       <CardMedia
@@ -61,6 +79,15 @@ const ActivityCard = ({ classes, i18n, activity, renderCardActions }) => {
         title={activityTranslation.name}
       />
       <CardContent classes={{ root: classes.contentGroup }}>
+        {basePrice ? (
+          <Typography variant="body2" className={classes.price}>
+            <Currency
+              currency={code}
+              quantity={convert(basePrice, rate)}
+              locale={getCurrencyLocale(language)}
+            />
+          </Typography>
+        ) : null}
         <Typography variant="headline" gutterBottom>
           {activityTranslation.name}
         </Typography>

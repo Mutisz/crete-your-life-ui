@@ -1,5 +1,7 @@
 import gql from "graphql-tag";
 
+import { CURRENCIES, EUR } from "../config/consts/currencyConsts";
+
 export const BOOKING_STEP_TRIP_INFORMATION = "bookingStepTripInformation";
 export const BOOKING_STEP_ACTIVITIES = "bookingStepActivities";
 export const BOOKING_STEP_HOTELS = "bookingStepHotels";
@@ -20,16 +22,28 @@ export const defaults = {
     fromDateString: null,
     toDateString: null,
     personCount: 1,
-    dateActivitySelected: null,
-    dateActivities: [],
     email: null,
-    phone: null
+    phone: null,
+    dateActivitySelected: null,
+    dateActivities: []
+  },
+  preferences: {
+    __typename: "Preferences",
+    currency: {
+      __typename: "Currency",
+      code: EUR,
+      rate: 1.0
+    }
   }
 };
 
 export const typeDefs = `
   enum BookingStep {
     ${BOOKING_STEPS.join("\n")}
+  }
+
+  enum CurrencyCode {
+    ${CURRENCIES.join("\n")}
   }
 
   type BookingStatus {
@@ -46,6 +60,15 @@ export const typeDefs = `
   type DateItem {
     dateString: String!
     name: String!
+  }
+
+  type Currency {
+    code: CurrencyCode!
+    rate: Float!
+  }
+
+  type Preferences {
+    currency: Currency!
   }
 
   type Query {

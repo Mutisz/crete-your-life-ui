@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
-import { map } from "lodash";
+import { flow, map, find } from "lodash";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -9,9 +9,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import { LANGUAGES } from "../../config/createI18n";
+import { CURRENCIES } from "../../config/consts/currencyConsts";
 
-class LanguageMenu extends Component {
+const enhance = flow(translate());
+
+class PreferencesLanguagePicker extends Component {
   state = {
     anchorEl: null
   };
@@ -24,17 +26,31 @@ class LanguageMenu extends Component {
     this.setState({ anchorEl: null });
   };
 
-  handleSelect = (i18n, language) => {
-    i18n.changeLanguage(language);
+  handleSelect = selectedCode => {
+    const { client, currencies } = this.props;
+    const { code, rate } = find(currencies, ["code", selectedCode]);
+    client.writeData({
+      data: {
+        preferences: {
+          __typename: "Preferences",
+          currency: {
+            __typename: "Currency",
+            code,
+            rate
+          }
+        }
+      }
+    });
+
     this.handleClose();
   };
 
   render() {
-    const { t, i18n } = this.props;
+    const { t, selectedCurrency } = this.props;
     const { anchorEl } = this.state;
 
-    const currentLanguageId = i18n.language;
-    const label = t("language");
+    const label = t("currency");
+    const selectedCurrencyCode = selectedCurrency.code;
 
     return (
       <div>
@@ -46,10 +62,7 @@ class LanguageMenu extends Component {
             aria-label={label}
             onClick={this.handleOpen}
           >
-            <ListItemText
-              primary={label}
-              secondary={LANGUAGES[currentLanguageId]}
-            />
+            <ListItemText primary={label} secondary={selectedCurrencyCode} />
           </ListItem>
         </List>
         <Menu
@@ -58,13 +71,13 @@ class LanguageMenu extends Component {
           open={Boolean(anchorEl)}
           onClose={this.handleClose}
         >
-          {map(LANGUAGES, (readable, id) => (
+          {map(CURRENCIES, code => (
             <MenuItem
-              key={id}
-              selected={id === currentLanguageId}
-              onClick={() => this.handleSelect(i18n, id)}
+              key={code}
+              selected={code === selectedCurrencyCode}
+              onClick={() => this.handleSelect(code)}
             >
-              {readable}
+              {code}
             </MenuItem>
           ))}
         </Menu>
@@ -73,9 +86,8 @@ class LanguageMenu extends Component {
   }
 }
 
-LanguageMenu.propTypes = {
-  t: PropTypes.func.isRequired,
-  i18n: PropTypes.object.isRequired
+PreferencesLanguagePicker.propTypes = {
+  t: PropTypes.func.isRequired
 };
 
-export default translate()(LanguageMenu);
+export default enhance(PreferencesLanguagePicker);

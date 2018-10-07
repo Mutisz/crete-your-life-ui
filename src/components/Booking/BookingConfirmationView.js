@@ -38,6 +38,7 @@ const GET_BOOKING_CONFIRMATION = gql`
           shortDescription
           translations {
             name
+            language
             shortDescription
           }
         }
@@ -46,12 +47,16 @@ const GET_BOOKING_CONFIRMATION = gql`
   }
 `;
 
+const propsToVariables = props => ({
+  number: props.match.params.number
+});
+
 const enhance = flow(
   withStyles(styles),
   translate(),
-  withQuery(GET_BOOKING_CONFIRMATION, {}, props => ({
-    number: props.match.params.number
-  }))
+  withQuery(GET_BOOKING_CONFIRMATION, {
+    propsToVariables
+  })
 );
 
 const BookingConfirmationView = ({ classes, t, data: { booking } }) => {

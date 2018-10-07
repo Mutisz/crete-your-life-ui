@@ -24,6 +24,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-apollo": "^2.1.11",
+    "react-currency-formatter": "^1.1.0",
     "react-dom": "^16.4.2",
     "react-form-validator-core": "^0.4.4",
     "react-i18next": "^7.11.1",

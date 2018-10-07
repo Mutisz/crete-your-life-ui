@@ -4,7 +4,7 @@ import { flow } from "lodash";
 import { isBefore } from "date-fns";
 import { getDateFromString } from "../../helpers/dateHelper";
 
-import { DATE_FORMAT } from "../../config/createI18nDate";
+import { DATE_FORMAT } from "../../config/consts/dateConsts";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";

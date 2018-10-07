@@ -1,5 +1,7 @@
 {
+  "preferences": "Preferences",
   "language": "Language",
+  "currency": "Currency",
 
   "booking": "Booking",
   "activities": "Activities",
@@ -22,11 +24,13 @@
   "validationDateRange": "Invalid date range",
   "validationRequired": "Field required",
 
+  "dateItemDisabled": "Date unavailable",
+
   "bookingButtonAdd": "Add to reservation",
   "bookingStepTripInformation": "Information",
   "bookingStepTripInformationDescription": "Provide information about your trip to get started",
   "bookingStepActivities": "Activities",
-  "bookingStepActivityiesDescription": "Select activities for days within selected date range",
+  "bookingStepActivitiesDescription": "Select activities for days within selected date range",
   "bookingStepHotels": "Hotel",
   "bookingStepHotelsDescription": "Select hotel or hotels for days within selected date range",
   "bookingStepServices": "Services",
