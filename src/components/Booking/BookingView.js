@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, map, find } from "lodash";
 import { getDates, getStringFromDate } from "../../helpers/dateHelper";
+import { calculateBookingPrice } from "../../helpers/bookingHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
@@ -66,11 +67,9 @@ const BOOKING_VIEW_QUERY = gql`
       name
       shortDescription
       description
-      basePricePerPerson
+      pricePerPerson
       images {
         isThumbnail
-        filePath
-        fileName
         url
       }
       translations {
@@ -117,12 +116,27 @@ class BookingView extends Component {
   getBookingInput = () => {
     const {
       data: {
-        bookingStatus: { fromDateString, toDateString, email, phone }
+        bookingStatus: {
+          fromDateString,
+          toDateString,
+          email,
+          phone,
+          personCount
+        },
+        activities
       }
     } = this.props;
     const dates = getDates(fromDateString, toDateString);
     const bookingDates = map(dates, this.getBookingInputDate);
-    return { booking: { email, phone, dates: bookingDates } };
+    const priceTotal = calculateBookingPrice(
+      personCount,
+      activities,
+      bookingDates
+    );
+
+    return {
+      booking: { email, phone, personCount, priceTotal, dates: bookingDates }
+    };
   };
 
   updateBookingStatus = valueObject => {

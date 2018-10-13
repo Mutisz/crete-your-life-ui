@@ -8,10 +8,13 @@
   "blog": "Blog",
 
   "maskWorkInProgress": "Strona w przygotowaniu...",
+  "loading": "Ładowanie...",
+  "error": "Wystąpił nieoczekiwany błąd! Przepraszamy!",
 
   "buttonNext": "Dalej",
   "buttonBack": "Wstecz",
   "buttonConfirm": "Potwierdź",
+  "buttonPayment": "Płatność",
 
   "inputDateFrom": "Data początku",
   "inputDateTo": "Data końca",
@@ -39,6 +42,15 @@
   "bookingStepConfirmDescription": "Podaj dane kontaktowe i potwierdź rezerwację",
   "bookingNoActivitySelected": "Brak aktywności",
   "bookingNoActivitySelectedDescription": "Zaznacz dzień i dodaj do niego aktywność korzystając z listy poniżej",
+
   "bookingConfirmation": "Potwierdzenie rezerwacji",
-  "bookingConfirmationTitle": "Rezerwacja nr {{id}}"
+  "bookingConfirmationTitle": "Rezerwacja {{id}}",
+  "bookingConfirmationContact": "Kontakt",
+  "bookingConfirmationPayment": "Płatność",
+  "bookingConfirmationPlan": "Plan",
+
+  "bookingPayment": "Płatność za rezerwację",
+  "bookingPaymentTitle": "Płatność za rezerwację {{id}}",
+  "bookingPaymentPrice": "Kwota",
+  "bookingPaymentStatus": "Stan"
 }

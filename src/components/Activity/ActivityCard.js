@@ -68,7 +68,7 @@ const ActivityCard = ({
   renderCardActions
 }) => {
   const { language } = i18n;
-  const basePrice = get(activity, "basePricePerPerson", null);
+  const price = get(activity, "pricePerPerson", null);
   const url = findItemThumbnailUrl(activity);
   const activityTranslation = findItemTranslation(activity, language);
   return (
@@ -79,11 +79,11 @@ const ActivityCard = ({
         title={activityTranslation.name}
       />
       <CardContent classes={{ root: classes.contentGroup }}>
-        {basePrice ? (
+        {price ? (
           <Typography variant="body2" className={classes.price}>
             <Currency
               currency={code}
-              quantity={convert(basePrice, rate)}
+              quantity={convert(price, rate)}
               locale={getCurrencyLocale(language)}
             />
           </Typography>

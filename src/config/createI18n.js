@@ -11,7 +11,7 @@ const createI18n = () =>
     .use(LanguageDetector)
     .use(reactI18nextModule)
     .init({
-      debug: process.env.DEBUG,
+      debug: process.env.REACT_APP_DEBUG,
       fallbackLng: "en",
       whitelist: Object.keys(LANGUAGES),
       ns: ["translations"],

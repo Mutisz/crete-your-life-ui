@@ -8,10 +8,13 @@
   "blog": "Blog",
 
   "maskWorkInProgress": "Page under construction...",
+  "loading": "Loading...",
+  "error": "Unexpected error occurred! Sorry!",
 
   "buttonNext": "Next",
   "buttonBack": "Back",
   "buttonConfirm": "Confirm",
+  "buttonPayment": "Go to payment",
 
   "inputDateFrom": "Start date",
   "inputDateTo": "End date",
@@ -39,6 +42,15 @@
   "bookingStepConfirmDescription": "Provide contact data and confirm booking",
   "bookingNoActivitySelected": "No activity",
   "bookingNoActivitySelectedDescription": "Select a day and add activity to it using the list below",
+
   "bookingConfirmation": "Booking confirmation",
-  "bookingConfirmationTitle": "Booking {{id}}"
+  "bookingConfirmationTitle": "Booking {{id}}",
+  "bookingConfirmationContact": "Contact",
+  "bookingConfirmationPayment": "Payment",
+  "bookingConfirmationPlan": "Plan",
+
+  "bookingPayment": "Booking payment",
+  "bookingPaymentTitle": "Payment for booking {{id}}",
+  "bookingPaymentPrice": "Amount",
+  "bookingPaymentStatus": "Status"
 }

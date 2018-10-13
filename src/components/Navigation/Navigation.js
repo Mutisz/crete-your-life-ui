@@ -102,6 +102,10 @@ class NavigationContainer extends Component {
               <Route path="/" render={() => t("booking")} exact />
               <Route path="/activities" render={() => t("activities")} />
               <Route path="/booking" render={() => t("bookingConfirmation")} />
+              <Route
+                path="/bookingPayment"
+                render={() => t("bookingPayment")}
+              />
             </Typography>
             <PreferencesDialog />
           </Toolbar>

@@ -33,11 +33,9 @@ const ACTIVITY_LIST_VIEW_QUERY = gql`
       name
       shortDescription
       description
-      basePricePerPerson
+      pricePerPerson
       images {
         isThumbnail
-        filePath
-        fileName
         url
       }
       translations {
