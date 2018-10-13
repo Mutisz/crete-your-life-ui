@@ -13,7 +13,7 @@ import { CURRENCIES } from "../../config/consts/currencyConsts";
 
 const enhance = flow(translate());
 
-class PreferencesLanguagePicker extends Component {
+class PreferencesCurrencyPicker extends Component {
   state = {
     anchorEl: null
   };
@@ -86,8 +86,8 @@ class PreferencesLanguagePicker extends Component {
   }
 }
 
-PreferencesLanguagePicker.propTypes = {
+PreferencesCurrencyPicker.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default enhance(PreferencesLanguagePicker);
+export default enhance(PreferencesCurrencyPicker);
