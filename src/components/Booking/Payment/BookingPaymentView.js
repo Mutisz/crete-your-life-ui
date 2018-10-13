@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, get } from "lodash";
@@ -11,19 +11,20 @@ import withQuery from "../../hoc/withQuery";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Currency from "react-currency-formatter";
-import { Elements } from "react-stripe-elements";
-// import BookingPayment from "./BookingPayment";
+import BookingPaymentMethodList from "./BookingPaymentMethodList";
 
 import preferencesPropType from "../../PropTypes/preferencesPropType";
 import bookingPropType from "../../PropTypes/bookingPropType";
 
 const styles = theme => ({
   root: {
-    minWidth: 240 + 8 * theme.spacing.unit - 16,
-    padding: 3 * theme.spacing.unit
+    minWidth: 240 + 8 * theme.spacing.unit - 16
   },
   section: {
     padding: 3 * theme.spacing.unit
+  },
+  subsection: {
+    marginBottom: 3 * theme.spacing.unit
   },
   dataTable: {
     minWidth: "25%",
@@ -71,36 +72,39 @@ const BookingPaymentView = ({
   }
 }) => {
   return (
-    <Paper className={classes.root} square>
-      <Typography variant="display1" gutterBottom>
-        {t("bookingPaymentTitle", { id: number })}
-      </Typography>
-      <div className={classes.subsection}>
-        <Typography variant="title" gutterBottom>
-          {t("bookingPaymentPrice")}
+    <div className={classes.root}>
+      <Paper className={classes.section} square>
+        <Typography variant="display1" gutterBottom>
+          {t("bookingPaymentTitle", { id: number })}
         </Typography>
-        <Typography variant="body1" component="div">
-          <table className={classes.dataTable}>
-            <tbody>
-              <tr>
-                <th scope="row">{t("bookingPaymentPrice")}</th>
-                <td>
-                  <Currency
-                    currency={code}
-                    quantity={convert(priceTotal, rate)}
-                    locale={getCurrencyLocale(language)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">{t("bookingPaymentStatus")}</th>
-                <td>Not paid</td>
-              </tr>
-            </tbody>
-          </table>
-        </Typography>
-      </div>
-    </Paper>
+        <div className={classes.subsection}>
+          <Typography variant="title" gutterBottom>
+            {t("bookingPaymentPrice")}
+          </Typography>
+          <Typography variant="body1" component="div">
+            <table className={classes.dataTable}>
+              <tbody>
+                <tr>
+                  <th scope="row">{t("bookingPaymentPrice")}</th>
+                  <td>
+                    <Currency
+                      currency={code}
+                      quantity={convert(priceTotal, rate)}
+                      locale={getCurrencyLocale(language)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">{t("bookingPaymentStatus")}</th>
+                  <td>Not paid</td>
+                </tr>
+              </tbody>
+            </table>
+          </Typography>
+        </div>
+      </Paper>
+      <BookingPaymentMethodList />
+    </div>
   );
 };
 
@@ -115,18 +119,3 @@ BookingPaymentView.propTypes = {
 };
 
 export default enhance(BookingPaymentView);
-
-// const enhance = flow(injectStripe);
-
-// class CheckoutForm extends Component {
-//   render() {
-//     return (
-//       <label>
-//         Card details
-//         <CardElement />
-//       </label>
-//     );
-//   }
-// }
-
-// export default enhance(CheckoutForm);
