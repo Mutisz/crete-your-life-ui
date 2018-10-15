@@ -55,8 +55,11 @@ class BookingStepContactInformation extends Component {
             label={t("inputEmail")}
             value={email || ""}
             onChange={this.handleFieldChange("email")}
-            validators={["required"]}
-            errorMessages={[t("validationRequired")]}
+            validators={["required", "isEmail"]}
+            errorMessages={[
+              t("validationRequired"),
+              t("validationInvalidEmail")
+            ]}
           />
           <TextValidator
             className={classes.inputField}

@@ -26,6 +26,7 @@
 
   "validationDateRange": "Invalid date range",
   "validationRequired": "Field required",
+  "validationInvalidEmail": "Invalid email address",
 
   "dateItemDisabled": "Date unavailable",
 

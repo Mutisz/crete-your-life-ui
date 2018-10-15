@@ -26,6 +26,7 @@
 
   "validationDateRange": "Błędny zakres dat",
   "validationRequired": "Pole wymagane",
+  "validationInvalidEmail": "Niepoprawny adres email",
 
   "dateItemDisabled": "Termin niedostępny",
 
