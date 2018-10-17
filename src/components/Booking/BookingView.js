@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, map, find } from "lodash";
 import { getDates, getStringFromDate } from "../../helpers/dateHelper";
-import { calculateBookingPrice } from "../../helpers/bookingHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
@@ -122,20 +121,14 @@ class BookingView extends Component {
           email,
           phone,
           personCount
-        },
-        activities
+        }
       }
     } = this.props;
     const dates = getDates(fromDateString, toDateString);
     const bookingDates = map(dates, this.getBookingInputDate);
-    const priceTotal = calculateBookingPrice(
-      personCount,
-      activities,
-      bookingDates
-    );
 
     return {
-      booking: { email, phone, personCount, priceTotal, dates: bookingDates }
+      booking: { email, phone, personCount, dates: bookingDates }
     };
   };
 

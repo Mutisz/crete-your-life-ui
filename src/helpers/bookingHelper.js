@@ -1,5 +1,5 @@
 import { compareAsc, compareDesc } from "date-fns";
-import { curryRight, get, find, reduce } from "lodash";
+import { curryRight, get, find } from "lodash";
 
 export const PLACEHOLDER_URL = "/images/placeholder.png";
 
@@ -24,16 +24,3 @@ export const findItemTranslation = (item, language) =>
 export const findItemThumbnailUrl = item =>
   get(find(item.images, image => Boolean(image.isThumbnail)), "url") ||
   PLACEHOLDER_URL;
-
-export const calculateBookingPrice = (personCount, activities, bookingDates) =>
-  reduce(
-    bookingDates,
-    (acc, bookingDate) => {
-      const activityName = get(bookingDate, "activity");
-      const activity = activityName
-        ? find(activities, ["name", activityName])
-        : null;
-      return acc + get(activity, "pricePerPerson", 0) * personCount;
-    },
-    0
-  );
