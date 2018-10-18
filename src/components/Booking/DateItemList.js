@@ -143,6 +143,10 @@ class DateItemList extends Component {
   };
 }
 
+DateItemList.defaultProps = {
+  dateItemsDisabled: []
+};
+
 DateItemList.propTypes = {
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,

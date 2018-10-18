@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
-import { flow, map } from "lodash";
+import { flow, find, get } from "lodash";
 import { findItem, findItemTranslation } from "../../helpers/bookingHelper";
-import { getDateFromString, formatDateIso } from "../../helpers/dateHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -16,8 +15,9 @@ import Button from "@material-ui/core/Button";
 import DateItemList from "./DateItemList";
 import ActivityList from "../Activity/ActivityList";
 
-import activityProp from "../PropTypes/activityPropType";
+import preferencesProp from "../PropTypes/preferencesPropType";
 import bookingStatusProp from "../PropTypes/bookingStatusPropType";
+import activityProp from "../PropTypes/activityPropType";
 
 const styles = theme => ({
   root: {
@@ -33,9 +33,13 @@ const styles = theme => ({
 });
 
 const BOOKING_STEP_ACTIVITY_LIST_QUERY = gql`
-  query GetBookingDates($fromDate: DateTime!, $toDate: DateTime!) {
-    bookingDates(fromDate: $fromDate, toDate: $toDate) {
+  query GetBookingDatesOccupancy($fromDate: String!, $toDate: String!) {
+    bookingDatesOccupancy(fromDate: $fromDate, toDate: $toDate) {
       date
+      activity {
+        name
+      }
+      personCount
     }
   }
 `;
@@ -54,8 +58,8 @@ const propsToVariables = props => {
     bookingStatus: { fromDateString, toDateString }
   } = props;
   return {
-    fromDate: getDateFromString(fromDateString),
-    toDate: getDateFromString(toDateString)
+    fromDate: fromDateString,
+    toDate: toDateString
   };
 };
 
@@ -93,6 +97,31 @@ class BookingStepActivityList extends Component {
     const { i18n } = this.props;
     const activity = this.findActivity();
     return activity ? findItemTranslation(activity, i18n.language) : null;
+  };
+
+  getAvailableActivities = () => {
+    const {
+      data: { bookingDatesOccupancy },
+      bookingStatus: { personCount, dateActivitySelected },
+      activities
+    } = this.props;
+    const dateOccupancy = dateActivitySelected
+      ? find(bookingDatesOccupancy, ["date", dateActivitySelected])
+      : null;
+    if (!dateOccupancy) {
+      return activities;
+    }
+
+    const occupiedName = get(dateOccupancy, ["activity", "name"]);
+    const occupiedPersonCount = get(dateOccupancy, "personCount", 0);
+    const dateOccupancyActivity = find(activities, ["name", occupiedName]);
+    const personCountAfterBooking = occupiedPersonCount + personCount;
+    const maxPersonCount = get(dateOccupancyActivity, "maxPersonCount");
+    if (personCountAfterBooking >= maxPersonCount) {
+      return [];
+    } else {
+      return [dateOccupancyActivity];
+    }
   };
 
   renderActivity = () => {
@@ -135,7 +164,6 @@ class BookingStepActivityList extends Component {
     const {
       classes,
       preferences: { currency },
-      data: { bookingDates },
       bookingStatus: {
         dateActivitySelected,
         dateActivities,
@@ -149,16 +177,12 @@ class BookingStepActivityList extends Component {
     const renderCardActions = dateActivitySelected
       ? this.renderCardActions
       : null;
-    const dateItemsDisabled = map(bookingDates, bookingDate =>
-      formatDateIso(bookingDate.date)
-    );
     return (
       <div className={classes.root}>
         <DateItemList
           fromDateString={fromDateString}
           toDateString={toDateString}
           dateItemSelected={dateActivitySelected}
-          dateItemsDisabled={dateItemsDisabled}
           dateItems={dateActivities}
           items={activities}
           handleDateItemSelect={this.handleDateActivitySelect}
@@ -169,7 +193,7 @@ class BookingStepActivityList extends Component {
         <Divider className={classes.divider} />
         <ActivityList
           currency={currency}
-          activities={activities}
+          activities={this.getAvailableActivities()}
           renderCardActions={renderCardActions}
         />
       </div>
@@ -177,13 +201,20 @@ class BookingStepActivityList extends Component {
   }
 }
 
+const bookingDateOccupancyPropType = PropTypes.shape({
+  date: PropTypes.string.isRequired,
+  activity: PropTypes.object.isRequired,
+  personCount: PropTypes.number.isRequired
+});
+
 BookingStepActivityList.propTypes = {
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   mutate: PropTypes.func.isRequired,
+  preferences: preferencesProp,
   data: PropTypes.shape({
-    bookingDates: PropTypes.arrayOf(PropTypes.shape({ date: PropTypes.string }))
+    bookingDatesOccupancy: PropTypes.arrayOf(bookingDateOccupancyPropType)
   }),
   bookingStatus: bookingStatusProp.isRequired,
   activities: PropTypes.arrayOf(activityProp).isRequired,

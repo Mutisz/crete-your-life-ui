@@ -67,6 +67,8 @@ const BOOKING_VIEW_QUERY = gql`
       shortDescription
       description
       pricePerPerson
+      minPersonCount
+      maxPersonCount
       images {
         isThumbnail
         url
@@ -107,7 +109,7 @@ class BookingView extends Component {
     const dateString = getStringFromDate(date);
     const activity = find(dateActivities, ["dateString", dateString]);
     return {
-      date: date,
+      date: dateString,
       activity: activity ? activity.name : null
     };
   };
