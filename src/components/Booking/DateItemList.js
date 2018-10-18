@@ -14,6 +14,7 @@ import {
 } from "../../helpers/bookingHelper";
 
 import { withStyles } from "@material-ui/core/styles";
+import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 import { translate } from "react-i18next";
 
 import GridList from "@material-ui/core/GridList";
@@ -25,13 +26,11 @@ import dateItemProp from "../PropTypes/dateItemPropType";
 const styles = theme => {
   return {
     root: {
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "space-around",
       overflow: "hidden",
       padding: theme.spacing.unit
     },
     list: {
+      display: "flex",
       flexWrap: "nowrap"
     },
     listTile: {
@@ -49,6 +48,7 @@ const styles = theme => {
 
 const enhance = flow(
   withStyles(styles),
+  withWidth(),
   translate()
 );
 
@@ -130,12 +130,13 @@ class DateItemList extends Component {
   };
 
   render = () => {
-    const { classes, fromDateString, toDateString } = this.props;
+    const { classes, width, fromDateString, toDateString } = this.props;
     const dates = getDates(fromDateString, toDateString);
+    const cols = isWidthUp("sm", width) ? 3 : 1;
 
     return (
       <div className={classes.root}>
-        <GridList className={classes.list} cols={3}>
+        <GridList className={classes.list} cols={cols}>
           {map(dates, date => this.renderDateItem(date))}
         </GridList>
       </div>
@@ -149,6 +150,7 @@ DateItemList.defaultProps = {
 
 DateItemList.propTypes = {
   classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired,
   i18n: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   fromDateString: PropTypes.string.isRequired,
