@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, find, get } from "lodash";
@@ -14,6 +14,7 @@ import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import DateItemList from "./DateItemList";
 import ActivityList from "../Activity/ActivityList";
+import MessagePanel from "../Message/MessagePanel";
 
 import preferencesProp from "../PropTypes/preferencesPropType";
 import bookingStatusProp from "../PropTypes/bookingStatusPropType";
@@ -27,8 +28,8 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   divider: {
-    marginTop: 4 * theme.spacing.unit,
-    marginBottom: 4 * theme.spacing.unit
+    marginTop: 3 * theme.spacing.unit,
+    marginBottom: 3 * theme.spacing.unit
   }
 });
 
@@ -124,6 +125,22 @@ class BookingStepActivityList extends Component {
     }
   };
 
+  getOccupiedMessageKey = () => {
+    const { activities } = this.props;
+    const availableActivities = this.getAvailableActivities();
+    const isFullyOccupied = availableActivities.length === 0;
+    if (isFullyOccupied) {
+      return "messageDateFullyOccupied";
+    }
+
+    const isOccupied = availableActivities.length !== activities.length;
+    if (isOccupied) {
+      return "messageDatePartiallyOccupied";
+    }
+
+    return null;
+  };
+
   renderActivity = () => {
     const { classes, t } = this.props;
     const activityTranslation = this.findActivityTranslation();
@@ -174,9 +191,8 @@ class BookingStepActivityList extends Component {
       renderStepperActionGroup
     } = this.props;
 
-    const renderCardActions = dateActivitySelected
-      ? this.renderCardActions
-      : null;
+    const canAddActivity = !this.findActivity();
+    const occupiedMessageKey = this.getOccupiedMessageKey();
     return (
       <div className={classes.root}>
         <DateItemList
@@ -190,12 +206,19 @@ class BookingStepActivityList extends Component {
         <Divider className={classes.divider} />
         {this.renderActivity()}
         <div className={classes.group}>{renderStepperActionGroup()}</div>
-        <Divider className={classes.divider} />
-        <ActivityList
-          currency={currency}
-          activities={this.getAvailableActivities()}
-          renderCardActions={renderCardActions}
-        />
+        {canAddActivity ? (
+          <Fragment>
+            <Divider className={classes.divider} />
+            {occupiedMessageKey ? (
+              <MessagePanel messageKey={occupiedMessageKey} />
+            ) : null}
+            <ActivityList
+              currency={currency}
+              activities={this.getAvailableActivities()}
+              renderCardActions={this.renderCardActions}
+            />
+          </Fragment>
+        ) : null}
       </div>
     );
   }

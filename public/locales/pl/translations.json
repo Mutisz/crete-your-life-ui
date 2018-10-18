@@ -28,6 +28,10 @@
   "validationRequired": "Pole wymagane",
   "validationInvalidEmail": "Niepoprawny adres email",
 
+  "messageWarning": "Uwaga",
+  "messageDateFullyOccupied": "Wybrany termin jest w peni zarezerwowany! Przepraszamy!",
+  "messageDatePartiallyOccupied": "Wybrny termin jest już zarezerwowany, ale możesz dołączyć do istniejącej aktywności.",
+
   "dateItemDisabled": "Termin niedostępny",
 
   "bookingButtonAdd": "Dodaj do rezerwacji",
