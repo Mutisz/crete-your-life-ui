@@ -48,7 +48,7 @@ export const filterActivitiesOccupied = curry(
     const dateOccupancyActivity = find(activities, ["name", occupiedName]);
     const personCountAfterBooking = occupiedPersonCount + personCount;
     const maxPersonCount = get(dateOccupancyActivity, "maxPersonCount");
-    if (personCountAfterBooking >= maxPersonCount) {
+    if (personCountAfterBooking > maxPersonCount) {
       return [];
     } else {
       return [dateOccupancyActivity];
