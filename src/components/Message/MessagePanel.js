@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { flow } from "lodash";
+import { flow, map } from "lodash";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -24,13 +24,17 @@ const enhance = flow(
   translate()
 );
 
-const MessagePanel = ({ classes, t, titleKey, messageKey }) => (
+const MessagePanel = ({ classes, t, titleKey, messageKeys, messageProps }) => (
   <div className={classes.root}>
     <Typography variant="title">
       <WarningIcon />
       <span className={classes.title}>{t(titleKey)}</span>
     </Typography>
-    <Typography variant="body1">{t(messageKey)}</Typography>
+    {map(messageKeys, key => (
+      <Typography variant="body1" component="p">
+        {t(key, messageProps)}
+      </Typography>
+    ))}
   </div>
 );
 
@@ -42,7 +46,8 @@ MessagePanel.propTypes = {
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   titleKey: PropTypes.string,
-  messageKey: PropTypes.string.isRequired
+  messageKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
+  messageProps: PropTypes.object
 };
 
 export default enhance(MessagePanel);

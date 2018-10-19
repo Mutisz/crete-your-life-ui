@@ -29,8 +29,10 @@
   "validationInvalidEmail": "Invalid email address",
 
   "messageWarning": "Warning",
-  "messageDateFullyOccupied": "We are sorry, we are fully booked on the date selected!",
-  "messageDatePartiallyOccupied": "We already have a booking on the date selected, but you can still join this activity.",
+  "messageDateFullyOccupied": "We are sorry, we are already booked on the date selected! There are {{remainingPersonCount}} places left on the booked activity.",
+  "messageDatePartiallyOccupied": "We already have a booking on the date selected, but you can still join this activity. There are {{remainingPersonCount}} places left on the booked activity.",
+  "messageDateAllWithExceededPersonCount": "We are sorry, all activities are unavailable because person count exceeds their maximum capacity.",
+  "messageDateSomeWithExceededPersonCount": "Some activities are unavailable because person count exceeds their maximum capacity.",
 
   "dateItemDisabled": "Date unavailable",
 

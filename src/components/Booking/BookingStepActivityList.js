@@ -1,8 +1,14 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
-import { flow, find, get } from "lodash";
-import { findItem, findItemTranslation } from "../../helpers/bookingHelper";
+import { flow } from "lodash";
+import {
+  findItem,
+  findItemTranslation,
+  getActivitiesAvailable,
+  getActivitiesMessageKeys,
+  getRemainingPersonCount
+} from "../../helpers/bookingHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -100,47 +106,6 @@ class BookingStepActivityList extends Component {
     return activity ? findItemTranslation(activity, i18n.language) : null;
   };
 
-  getAvailableActivities = () => {
-    const {
-      data: { bookingDatesOccupancy },
-      bookingStatus: { personCount, dateActivitySelected },
-      activities
-    } = this.props;
-    const dateOccupancy = dateActivitySelected
-      ? find(bookingDatesOccupancy, ["date", dateActivitySelected])
-      : null;
-    if (!dateOccupancy) {
-      return activities;
-    }
-
-    const occupiedName = get(dateOccupancy, ["activity", "name"]);
-    const occupiedPersonCount = get(dateOccupancy, "personCount", 0);
-    const dateOccupancyActivity = find(activities, ["name", occupiedName]);
-    const personCountAfterBooking = occupiedPersonCount + personCount;
-    const maxPersonCount = get(dateOccupancyActivity, "maxPersonCount");
-    if (personCountAfterBooking >= maxPersonCount) {
-      return [];
-    } else {
-      return [dateOccupancyActivity];
-    }
-  };
-
-  getOccupiedMessageKey = () => {
-    const { activities } = this.props;
-    const availableActivities = this.getAvailableActivities();
-    const isFullyOccupied = availableActivities.length === 0;
-    if (isFullyOccupied) {
-      return "messageDateFullyOccupied";
-    }
-
-    const isOccupied = availableActivities.length !== activities.length;
-    if (isOccupied) {
-      return "messageDatePartiallyOccupied";
-    }
-
-    return null;
-  };
-
   renderActivity = () => {
     const { classes, t } = this.props;
     const activityTranslation = this.findActivityTranslation();
@@ -192,7 +157,8 @@ class BookingStepActivityList extends Component {
     } = this.props;
 
     const canAddActivity = !this.findActivity();
-    const occupiedMessageKey = this.getOccupiedMessageKey();
+    const messageKeys = getActivitiesMessageKeys(this.props);
+    const remainingPersonCount = getRemainingPersonCount(this.props);
     return (
       <div className={classes.root}>
         <DateItemList
@@ -209,12 +175,15 @@ class BookingStepActivityList extends Component {
         {canAddActivity ? (
           <Fragment>
             <Divider className={classes.divider} />
-            {occupiedMessageKey ? (
-              <MessagePanel messageKey={occupiedMessageKey} />
+            {messageKeys.length > 0 ? (
+              <MessagePanel
+                messageKeys={messageKeys}
+                messageProps={{ remainingPersonCount }}
+              />
             ) : null}
             <ActivityList
               currency={currency}
-              activities={this.getAvailableActivities()}
+              activities={getActivitiesAvailable(this.props)}
               renderCardActions={this.renderCardActions}
             />
           </Fragment>
