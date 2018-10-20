@@ -178,7 +178,7 @@ class BookingStepActivityList extends Component {
             {messageKeys.length > 0 ? (
               <MessagePanel
                 messageKeys={messageKeys}
-                messageProps={{ remainingPersonCount }}
+                messageProps={{ count: remainingPersonCount }}
               />
             ) : null}
             <ActivityList

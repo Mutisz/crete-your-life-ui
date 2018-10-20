@@ -31,7 +31,7 @@ const MessagePanel = ({ classes, t, titleKey, messageKeys, messageProps }) => (
       <span className={classes.title}>{t(titleKey)}</span>
     </Typography>
     {map(messageKeys, key => (
-      <Typography variant="body1" component="p">
+      <Typography key={key} variant="body1" component="p">
         {t(key, messageProps)}
       </Typography>
     ))}

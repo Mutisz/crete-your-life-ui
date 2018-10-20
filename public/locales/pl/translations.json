@@ -29,8 +29,10 @@
   "validationInvalidEmail": "Niepoprawny adres email",
 
   "messageWarning": "Uwaga",
-  "messageDateFullyOccupied": "Przeprzaszamy, ale wybrany termin jest już zarezerwowany! Na zarezerwowanej wycieczce pozostało {{remainingPersonCount}} miejsc.",
-  "messageDatePartiallyOccupied": "Wybrany termin jest już zarezerwowany, ale możesz dołączyć do zarezerwowanej aktywności. Na zarezerwowanej aktywności pozostało {{remainingPersonCount}} miejsc.",
+  "messageDateFullyOccupied": "Przeprzaszamy, ale wybrany termin jest już zarezerwowany! Na zarezerwowanej aktywności pozostało {{remainingPersonCount}} miejsce.",
+  "messageDateFullyOccupied_plural": "Przeprzaszamy, ale wybrany termin jest już zarezerwowany! Na zarezerwowanej aktywności pozostało {{remainingPersonCount}} miejsc.",
+  "messageDatePartiallyOccupied": "Wybrany termin jest już zarezerwowany, ale możesz dołączyć do zarezerwowanej aktywności. Na zarezerwowanej aktywności pozostało {{remainingPersonCount}} miejsce.",
+  "messageDatePartiallyOccupied_plural": "Wybrany termin jest już zarezerwowany, ale możesz dołączyć do zarezerwowanej aktywności. Na zarezerwowanej aktywności pozostało {{remainingPersonCount}} miejsc.",
   "messageDateAllWithExceededPersonCount": "Przepraszamy, ale wszystkie aktywności są niedostępne, ponieważ liczebność grupy przekracza maksymalną dostępną.",
   "messageDateSomeWithExceededPersonCount": "Niektóre aktywności są niedostępne, ponieważ liczebność grupy przekracza maksymalną dostępną.",
 
