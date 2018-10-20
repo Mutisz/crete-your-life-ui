@@ -145,7 +145,7 @@ class BookingStepActivityList extends Component {
   render() {
     const {
       classes,
-      preferences: { currency },
+      preferences,
       bookingStatus: {
         dateActivitySelected,
         dateActivities,
@@ -182,7 +182,7 @@ class BookingStepActivityList extends Component {
               />
             ) : null}
             <ActivityList
-              currency={currency}
+              preferences={preferences}
               activities={getActivitiesAvailable(this.props)}
               renderCardActions={this.renderCardActions}
             />
@@ -193,7 +193,7 @@ class BookingStepActivityList extends Component {
   }
 }
 
-const bookingDateOccupancyPropType = PropTypes.shape({
+const bookingDateOccupancyProp = PropTypes.shape({
   date: PropTypes.string.isRequired,
   activity: PropTypes.object.isRequired,
   personCount: PropTypes.number.isRequired
@@ -204,11 +204,11 @@ BookingStepActivityList.propTypes = {
   i18n: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   mutate: PropTypes.func.isRequired,
-  preferences: preferencesProp,
-  data: PropTypes.shape({
-    bookingDatesOccupancy: PropTypes.arrayOf(bookingDateOccupancyPropType)
-  }),
+  preferences: preferencesProp.isRequired,
   bookingStatus: bookingStatusProp.isRequired,
+  data: PropTypes.shape({
+    bookingDatesOccupancy: PropTypes.arrayOf(bookingDateOccupancyProp)
+  }),
   activities: PropTypes.arrayOf(activityProp).isRequired,
   renderStepperActionGroup: PropTypes.func.isRequired,
   updateBookingStatus: PropTypes.func.isRequired

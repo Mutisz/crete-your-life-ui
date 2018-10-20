@@ -9,6 +9,7 @@ import withQuery from "../hoc/withQuery";
 import Paper from "@material-ui/core/Paper";
 import ActivityList from "./ActivityList";
 
+import preferencesProp from "../PropTypes/preferencesPropType";
 import activityProp from "../PropTypes/activityPropType";
 
 const styles = theme => ({
@@ -53,16 +54,10 @@ const enhance = flow(
   withQuery(ACTIVITY_LIST_VIEW_QUERY, {})
 );
 
-const ActivityListView = ({
-  classes,
-  data: {
-    preferences: { currency },
-    activities
-  }
-}) => (
+const ActivityListView = ({ classes, data: { preferences, activities } }) => (
   <div className={classes.root}>
     <Paper className={classes.section} square>
-      <ActivityList currency={currency} activities={activities} />
+      <ActivityList preferences={preferences} activities={activities} />
     </Paper>
   </div>
 );
@@ -70,6 +65,7 @@ const ActivityListView = ({
 ActivityListView.propTypes = {
   classes: PropTypes.object.isRequired,
   data: PropTypes.shape({
+    preferences: preferencesProp.isRequired,
     activities: PropTypes.arrayOf(activityProp).isRequired
   })
 };

@@ -18,6 +18,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Currency from "react-currency-formatter";
 
+import preferencesProp from "../PropTypes/preferencesPropType";
 import activityProp from "../PropTypes/activityPropType";
 
 const styles = theme => ({
@@ -63,7 +64,9 @@ const enhance = flow(
 const ActivityCard = ({
   classes,
   i18n,
-  currency: { code, rate },
+  preferences: {
+    currency: { code, rate }
+  },
   activity,
   renderCardActions
 }) => {
@@ -108,6 +111,7 @@ const ActivityCard = ({
 ActivityCard.propTypes = {
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,
+  preferences: preferencesProp.isRequired,
   activity: activityProp.isRequired,
   renderCardActions: PropTypes.func
 };

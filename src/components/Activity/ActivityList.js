@@ -6,6 +6,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import ActivityCard from "./ActivityCard";
 
+import preferencesProp from "../PropTypes/preferencesPropType";
 import activityProp from "../PropTypes/activityPropType";
 
 const styles = {
@@ -17,12 +18,17 @@ const styles = {
 
 const enhance = withStyles(styles);
 
-const ActivityList = ({ classes, currency, activities, renderCardActions }) => (
+const ActivityList = ({
+  classes,
+  preferences,
+  activities,
+  renderCardActions
+}) => (
   <div className={classes.root}>
     {map(activities, activity => (
       <ActivityCard
         key={activity.name}
-        currency={currency}
+        preferences={preferences}
         activity={activity}
         renderCardActions={renderCardActions}
       />
@@ -32,6 +38,7 @@ const ActivityList = ({ classes, currency, activities, renderCardActions }) => (
 
 ActivityList.propTypes = {
   classes: PropTypes.object.isRequired,
+  preferences: preferencesProp.isRequired,
   activities: PropTypes.arrayOf(activityProp).isRequired,
   renderCardActions: PropTypes.func
 };
