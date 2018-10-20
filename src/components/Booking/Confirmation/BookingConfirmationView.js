@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow } from "lodash";
 import { sortByDateAsc } from "../../../helpers/bookingHelper";
-import { getCurrencyLocale, convert } from "../../../helpers/currencyHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
@@ -13,10 +12,10 @@ import withQuery from "../../hoc/withQuery";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Currency from "react-currency-formatter";
 import BookingDateList from "../BookingDateList";
+import CurrencyField from "../../Currency/CurrencyField";
+import LabelledValueTable from "../../LabelledValue/LabelledValueTable";
 
-import preferencesPropType from "../../PropTypes/preferencesPropType";
 import bookingPropType from "../../PropTypes/bookingPropType";
 
 const styles = theme => ({
@@ -31,21 +30,11 @@ const styles = theme => ({
   },
   button: {
     marginTop: theme.spacing.unit
-  },
-  dataTable: {
-    minWidth: "25%",
-    textAlign: "left"
   }
 });
 
 const GET_BOOKING_CONFIRMATION = gql`
   query GetBookingConfirmation($number: String!) {
-    preferences @client {
-      currency {
-        code
-        rate
-      }
-    }
     booking(number: $number) {
       number
       email
@@ -84,19 +73,30 @@ const enhance = flow(
 const goToPayment = (history, number) =>
   history.push(`/bookingPayment/${number}`);
 
+const getContactValueList = ({ email, phone, personCount }) => [
+  { label: "inputEmail", value: email },
+  { label: "inputPhone", value: phone },
+  { label: "inputPersonCount", value: personCount }
+];
+
+const getPaymentValueList = ({ priceTotal }) => [
+  {
+    label: "bookingPaymentPrice",
+    value: <CurrencyField amount={priceTotal} />
+  },
+  { label: "bookingPaymentStatus", value: "Not paid" }
+];
+
 const BookingConfirmationView = ({
   history,
   classes,
   t,
-  i18n: { language },
-  data: {
-    preferences: {
-      currency: { code, rate }
-    },
-    booking: { number, email, phone, personCount, priceTotal, dates }
-  }
+  data: { booking }
 }) => {
+  const { number, dates } = booking;
   const sortedDates = sortByDateAsc(dates);
+  const contactValueList = getContactValueList(booking);
+  const paymentValueList = getPaymentValueList(booking);
   return (
     <div className={classes.root}>
       <Paper className={classes.section} square>
@@ -107,49 +107,13 @@ const BookingConfirmationView = ({
           <Typography variant="title" gutterBottom>
             {t("bookingConfirmationContact")}
           </Typography>
-          <Typography variant="body1" component="div">
-            <table className={classes.dataTable}>
-              <tbody>
-                <tr>
-                  <th scope="row">{t("inputEmail")}</th>
-                  <td>{email}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("inputPhone")}</th>
-                  <td>{phone}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("inputPersonCount")}</th>
-                  <td>{personCount}</td>
-                </tr>
-              </tbody>
-            </table>
-          </Typography>
+          <LabelledValueTable valueList={contactValueList} />
         </div>
         <div className={classes.subsection}>
           <Typography variant="title" gutterBottom>
             {t("bookingConfirmationPayment")}
           </Typography>
-          <Typography variant="body1" component="div">
-            <table className={classes.dataTable}>
-              <tbody>
-                <tr>
-                  <th scope="row">{t("bookingPaymentPrice")}</th>
-                  <td>
-                    <Currency
-                      currency={code}
-                      quantity={convert(priceTotal, rate)}
-                      locale={getCurrencyLocale(language)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("bookingPaymentStatus")}</th>
-                  <td>Not paid</td>
-                </tr>
-              </tbody>
-            </table>
-          </Typography>
+          <LabelledValueTable valueList={paymentValueList} />
           <Button
             type="button"
             variant="contained"
@@ -172,10 +136,8 @@ BookingConfirmationView.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  i18n: PropTypes.shape({ language: PropTypes.string.isRequired }).isRequired,
   data: PropTypes.shape({
-    preferences: preferencesPropType.isRequired,
-    booking: bookingPropType
+    booking: bookingPropType.isRequired
   })
 };
 

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow } from "lodash";
 import { findItemTranslation } from "../../../helpers/bookingHelper";
-import { getCurrencyLocale, convert } from "../../../helpers/currencyHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -12,9 +11,9 @@ import withQuery from "../../hoc/withQuery";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Markdown from "react-markdown";
-import Currency from "react-currency-formatter";
+import CurrencyField from "../../Currency/CurrencyField";
+import LabelledValueTable from "../../LabelledValue/LabelledValueTable";
 
-import preferencesProp from "../../PropTypes/preferencesPropType";
 import activityProp from "../../PropTypes/activityPropType";
 
 const styles = theme => ({
@@ -29,21 +28,11 @@ const styles = theme => ({
   },
   button: {
     marginTop: theme.spacing.unit
-  },
-  dataTable: {
-    minWidth: "25%",
-    textAlign: "left"
   }
 });
 
 const ACTIVITY_DETAILS_VIEW_QUERY = gql`
   query GetActivity($name: String!) {
-    preferences @client {
-      currency {
-        code
-        rate
-      }
-    }
     activity(name: $name) {
       name
       shortDescription
@@ -78,19 +67,35 @@ const enhance = flow(
   withQuery(ACTIVITY_DETAILS_VIEW_QUERY, { propsToVariables })
 );
 
+const getInformationList = ({
+  pricePerPerson,
+  category,
+  difficulty,
+  durationHours,
+  earliestStartHour,
+  latestStartHour
+}) => [
+  {
+    label: "activityDetailsPrice",
+    value: <CurrencyField amount={pricePerPerson} />
+  },
+  { label: "activityDetailsCategory", value: category },
+  { label: "activityDetailsDifficulty", value: difficulty },
+  { label: "activityDetailsDuration", value: durationHours },
+  {
+    label: "activityDetailsStartHour",
+    value: `${earliestStartHour} - ${latestStartHour}`
+  }
+];
+
 const ActivityDetailsView = ({
   classes,
   t,
-  i18n,
-  data: {
-    preferences: {
-      currency: { code, rate }
-    },
-    activity
-  }
+  i18n: { language },
+  data: { activity }
 }) => {
-  const { language } = i18n;
   const activityTranslation = findItemTranslation(activity, language);
+  const informationList = getInformationList(activity);
   return (
     <div className={classes.root}>
       <Paper className={classes.section} square>
@@ -101,40 +106,7 @@ const ActivityDetailsView = ({
           <Typography variant="title" gutterBottom>
             {t("activityDetailsInformation")}
           </Typography>
-          <Typography variant="body1" component="div">
-            <table className={classes.dataTable}>
-              <tbody>
-                <tr>
-                  <th scope="row">{t("activityDetailsPrice")}</th>
-                  <td>
-                    <Currency
-                      currency={code}
-                      quantity={convert(activity.pricePerPerson, rate)}
-                      locale={getCurrencyLocale(language)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("activityDetailsCategory")}</th>
-                  <td>{t(activity.category)}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("activityDetailsDifficulty")}</th>
-                  <td>{t(activity.difficulty)}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("activityDetailsDuration")}</th>
-                  <td>{activity.durationHours}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("activityDetailsStartHour")}</th>
-                  <td>{`${activity.earliestStartHour} - ${
-                    activity.latestStartHour
-                  }`}</td>
-                </tr>
-              </tbody>
-            </table>
-          </Typography>
+          <LabelledValueTable valueList={informationList} />
         </div>
         <Typography variant="body1" component="div" gutterBottom>
           <Markdown source={activityTranslation.description} />
@@ -146,9 +118,9 @@ const ActivityDetailsView = ({
 
 ActivityDetailsView.propTypes = {
   classes: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   data: PropTypes.shape({
-    preferences: preferencesProp.isRequired,
     activity: activityProp.isRequired
   })
 };

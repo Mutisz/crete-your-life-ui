@@ -5,7 +5,6 @@ import {
   findItemTranslation,
   findItemThumbnailUrl
 } from "../../helpers/bookingHelper";
-import { getCurrencyLocale, convert } from "../../helpers/currencyHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
@@ -19,9 +18,8 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import LinesEllipsis from "react-lines-ellipsis";
-import Currency from "react-currency-formatter";
+import CurrencyField from "../Currency/CurrencyField";
 
-import preferencesProp from "../PropTypes/preferencesPropType";
 import activityProp from "../PropTypes/activityPropType";
 
 const styles = theme => ({
@@ -85,14 +83,10 @@ ActivityCardActions.propTypes = {
 const ActivityCard = ({
   history,
   classes,
-  i18n,
-  preferences: {
-    currency: { code, rate }
-  },
+  i18n: { language },
   activity,
   renderCardActions
 }) => {
-  const { language } = i18n;
   const price = get(activity, "pricePerPerson", null);
   const url = findItemThumbnailUrl(activity);
   const activityTranslation = findItemTranslation(activity, language);
@@ -107,11 +101,7 @@ const ActivityCard = ({
         <CardContent classes={{ root: classes.contentGroup }}>
           {price ? (
             <Typography variant="body2" className={classes.price}>
-              <Currency
-                currency={code}
-                quantity={convert(price, rate)}
-                locale={getCurrencyLocale(language)}
-              />
+              <CurrencyField amount={price} />
             </Typography>
           ) : null}
           <Typography variant="headline" gutterBottom>
@@ -138,7 +128,6 @@ ActivityCard.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,
-  preferences: preferencesProp.isRequired,
   activity: activityProp.isRequired,
   renderCardActions: PropTypes.func
 };

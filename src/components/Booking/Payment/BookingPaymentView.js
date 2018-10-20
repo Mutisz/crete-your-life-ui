@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { flow, get } from "lodash";
-import { getCurrencyLocale, convert } from "../../../helpers/currencyHelper";
 
 import { withStyles } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
@@ -10,10 +9,10 @@ import withQuery from "../../hoc/withQuery";
 
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Currency from "react-currency-formatter";
+import CurrencyField from "../../Currency/CurrencyField";
+import LabelledValueTable from "../../LabelledValue/LabelledValueTable";
 import BookingPaymentMethodList from "./BookingPaymentMethodList";
 
-import preferencesPropType from "../../PropTypes/preferencesPropType";
 import bookingPropType from "../../PropTypes/bookingPropType";
 
 const styles = theme => ({
@@ -34,12 +33,6 @@ const styles = theme => ({
 
 const BOOKING_PAYMENT_QUERY = gql`
   query GetBookingConfirmation($number: String!) {
-    preferences @client {
-      currency {
-        code
-        rate
-      }
-    }
     booking(number: $number) {
       number
       email
@@ -60,17 +53,17 @@ const enhance = flow(
   })
 );
 
-const BookingPaymentView = ({
-  classes,
-  t,
-  i18n: { language },
-  data: {
-    preferences: {
-      currency: { code, rate }
-    },
-    booking: { number, priceTotal }
-  }
-}) => {
+const getPriceList = ({ priceTotal }) => [
+  {
+    label: "bookingPaymentPrice",
+    value: <CurrencyField amount={priceTotal} />
+  },
+  { label: "bookingPaymentStatus", value: "Not paid" }
+];
+
+const BookingPaymentView = ({ classes, t, data: { booking } }) => {
+  const { number } = booking;
+  const priceList = getPriceList(booking);
   return (
     <div className={classes.root}>
       <Paper className={classes.section} square>
@@ -81,26 +74,7 @@ const BookingPaymentView = ({
           <Typography variant="title" gutterBottom>
             {t("bookingPaymentPrice")}
           </Typography>
-          <Typography variant="body1" component="div">
-            <table className={classes.dataTable}>
-              <tbody>
-                <tr>
-                  <th scope="row">{t("bookingPaymentPrice")}</th>
-                  <td>
-                    <Currency
-                      currency={code}
-                      quantity={convert(priceTotal, rate)}
-                      locale={getCurrencyLocale(language)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">{t("bookingPaymentStatus")}</th>
-                  <td>Not paid</td>
-                </tr>
-              </tbody>
-            </table>
-          </Typography>
+          <LabelledValueTable valueList={priceList} />
         </div>
       </Paper>
       <BookingPaymentMethodList />
@@ -111,9 +85,7 @@ const BookingPaymentView = ({
 BookingPaymentView.propTypes = {
   classes: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  i18n: PropTypes.shape({ language: PropTypes.string.isRequired }).isRequired,
   data: PropTypes.shape({
-    preferences: preferencesPropType.isRequired,
     booking: bookingPropType
   })
 };
