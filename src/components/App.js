@@ -10,10 +10,11 @@ import { translate } from "react-i18next";
 
 import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
 import Navigation from "./Navigation/Navigation";
+import ActivityListView from "./Activity/ActivityListView";
+import ActivityDetailsView from "./Activity/Details/ActivityDetailsView";
 import BookingView from "./Booking/BookingView";
 import BookingConfirmationView from "./Booking/Confirmation/BookingConfirmationView";
 import BookingPaymentView from "./Booking/Payment/BookingPaymentView";
-import ActivityListView from "./Activity/ActivityListView";
 
 const enhance = flow(translate());
 
@@ -25,6 +26,7 @@ const App = ({ i18n }) => {
         <Switch>
           <Route path="/" component={BookingView} exact />
           <Route path="/activities" component={ActivityListView} />
+          <Route path="/activity/:name" component={ActivityDetailsView} />
           <Route path="/booking/:number" component={BookingConfirmationView} />
           <Route
             path="/bookingPayment/:number"

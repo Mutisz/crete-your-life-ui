@@ -8,14 +8,17 @@ import {
 import { getCurrencyLocale, convert } from "../../helpers/currencyHelper";
 
 import { withStyles } from "@material-ui/core/styles";
+import { withRouter } from "react-router-dom";
 import { translate } from "react-i18next";
 
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
+import LinesEllipsis from "react-lines-ellipsis";
 import Currency from "react-currency-formatter";
 
 import preferencesProp from "../PropTypes/preferencesPropType";
@@ -27,7 +30,12 @@ const styles = theme => ({
     width: 240,
     margin: theme.spacing.unit
   },
+  mediaGroup: {
+    height: 0,
+    paddingTop: "56.25%"
+  },
   contentGroup: {
+    height: 104,
     marginBottom: 48
   },
   actionGroup: {
@@ -49,19 +57,33 @@ const styles = theme => ({
   },
   button: {
     margin: "auto"
-  },
-  image: {
-    height: 0,
-    paddingTop: "56.25%"
   }
 });
 
 const enhance = flow(
+  withRouter,
   withStyles(styles),
   translate()
 );
 
+const goToDetails = (history, name) => history.push(`/activity/${name}`);
+
+const ActivityCardActions = ({ classes, activity, renderCardActions }) =>
+  renderCardActions ? (
+    <div className={classes.actionGroup}>
+      <Divider />
+      <CardActions>{renderCardActions(classes, activity)}</CardActions>
+    </div>
+  ) : null;
+
+ActivityCardActions.propTypes = {
+  classes: PropTypes.object.isRequired,
+  activity: activityProp.isRequired,
+  renderCardActions: PropTypes.func
+};
+
 const ActivityCard = ({
+  history,
   classes,
   i18n,
   preferences: {
@@ -76,39 +98,44 @@ const ActivityCard = ({
   const activityTranslation = findItemTranslation(activity, language);
   return (
     <Card className={classes.root}>
-      <CardMedia
-        className={classes.image}
-        image={url}
-        title={activityTranslation.name}
-      />
-      <CardContent classes={{ root: classes.contentGroup }}>
-        {price ? (
-          <Typography variant="body2" className={classes.price}>
-            <Currency
-              currency={code}
-              quantity={convert(price, rate)}
-              locale={getCurrencyLocale(language)}
+      <CardActionArea onClick={() => goToDetails(history, activity.name)}>
+        <CardMedia
+          className={classes.mediaGroup}
+          image={url}
+          title={activityTranslation.name}
+        />
+        <CardContent classes={{ root: classes.contentGroup }}>
+          {price ? (
+            <Typography variant="body2" className={classes.price}>
+              <Currency
+                currency={code}
+                quantity={convert(price, rate)}
+                locale={getCurrencyLocale(language)}
+              />
+            </Typography>
+          ) : null}
+          <Typography variant="headline" gutterBottom>
+            {activityTranslation.name}
+          </Typography>
+          <Typography variant="body1">
+            <LinesEllipsis
+              text={activityTranslation.shortDescription}
+              maxLine={3}
             />
           </Typography>
-        ) : null}
-        <Typography variant="headline" gutterBottom>
-          {activityTranslation.name}
-        </Typography>
-        <Typography variant="body1">
-          {activityTranslation.shortDescription}
-        </Typography>
-      </CardContent>
-      {renderCardActions ? (
-        <div className={classes.actionGroup}>
-          <Divider />
-          <CardActions>{renderCardActions(classes, activity)}</CardActions>
-        </div>
-      ) : null}
+        </CardContent>
+      </CardActionArea>
+      <ActivityCardActions
+        classes={classes}
+        activity={activity}
+        renderCardActions={renderCardActions}
+      />
     </Card>
   );
 };
 
 ActivityCard.propTypes = {
+  history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   i18n: PropTypes.object.isRequired,
   preferences: preferencesProp.isRequired,
