@@ -28,6 +28,8 @@
   "validationRequired": "Field required",
   "validationInvalidEmail": "Invalid email address",
 
+  "dateItemDisabled": "Date unavailable",
+
   "messageWarning": "Warning",
   "messageDateFullyOccupied": "We are sorry, we are already booked on the date selected! There is {{count}} place left on the booked activity.",
   "messageDateFullyOccupied_plural": "We are sorry, we are already booked on the date selected! There are {{count}} places left on the booked activity.",
@@ -36,7 +38,12 @@
   "messageDateAllWithExceededPersonCount": "We are sorry, all activities are unavailable because person count exceeds their maximum capacity.",
   "messageDateSomeWithExceededPersonCount": "Some activities are unavailable because person count exceeds their maximum capacity.",
 
-  "dateItemDisabled": "Date unavailable",
+  "activityDetailsInformation": "Activity information",
+  "activityDetailsPrice": "Price per person",
+  "activityDetailsCategory": "Category",
+  "activityDetailsDifficulty": "Difficulty",
+  "activityDetailsDuration": "Duration",
+  "activityDetailsStartHour": "Start between",
 
   "bookingButtonAdd": "Add to reservation",
   "bookingStepTripInformation": "Information",

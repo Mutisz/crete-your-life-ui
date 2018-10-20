@@ -117,7 +117,7 @@ const ActivityCard = ({
           <Typography variant="headline" gutterBottom>
             {activityTranslation.name}
           </Typography>
-          <Typography variant="body1">
+          <Typography variant="body1" component="div">
             <LinesEllipsis
               text={activityTranslation.shortDescription}
               maxLine={3}
