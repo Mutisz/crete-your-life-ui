@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
 import { flow } from "lodash";
+import moment from "moment";
 import MuiPickersUtils from "../helpers/MuiPickersUtils";
 
 import { translate } from "react-i18next";
@@ -17,8 +18,13 @@ import BookingPaymentView from "./Booking/Payment/BookingPaymentView";
 const enhance = flow(translate());
 
 const App = ({ i18n }) => {
+  moment.locale(i18n.language);
   return (
-    <MuiPickersUtilsProvider utils={MuiPickersUtils} locale={i18n.language}>
+    <MuiPickersUtilsProvider
+      utils={MuiPickersUtils}
+      locale={i18n.language}
+      moment={moment}
+    >
       <Navigation>
         <Switch>
           <Route path="/" component={BookingView} exact />
