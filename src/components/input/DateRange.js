@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { flow } from "lodash";
-import { isBefore } from "date-fns";
 import { getDateFromString } from "../../helpers/dateHelper";
+import moment from "moment";
 
 import { DATE_FORMAT } from "../../config/consts/dateConsts";
 
@@ -31,7 +31,7 @@ class DateRange extends Component {
       return (
         !fromDateString ||
         !toDateString ||
-        isBefore(fromDateString, toDateString)
+        moment(fromDateString).isBefore(toDateString)
       );
     });
   }

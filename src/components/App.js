@@ -2,13 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
 import { flow } from "lodash";
-import I18nDateFnsUtils, {
-  createI18nDateLocale
-} from "../config/createI18nDate";
+import MuiPickersUtils from "../helpers/MuiPickersUtils";
 
 import { translate } from "react-i18next";
 
-import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
+import { MuiPickersUtilsProvider } from "material-ui-pickers";
 import Navigation from "./Navigation/Navigation";
 import ActivityListView from "./Activity/ActivityListView";
 import ActivityDetailsView from "./Activity/Details/ActivityDetailsView";
@@ -19,9 +17,8 @@ import BookingPaymentView from "./Booking/Payment/BookingPaymentView";
 const enhance = flow(translate());
 
 const App = ({ i18n }) => {
-  const dateLocale = createI18nDateLocale(i18n.language);
   return (
-    <MuiPickersUtilsProvider utils={I18nDateFnsUtils} locale={dateLocale}>
+    <MuiPickersUtilsProvider utils={MuiPickersUtils} locale={i18n.language}>
       <Navigation>
         <Switch>
           <Route path="/" component={BookingView} exact />

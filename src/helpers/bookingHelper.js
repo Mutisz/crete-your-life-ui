@@ -1,5 +1,5 @@
-import { compareAsc, compareDesc } from "date-fns";
 import { curry, curryRight, get, find, filter, flow } from "lodash";
+import moment from "moment";
 
 export const PLACEHOLDER_URL = "/images/placeholder.png";
 
@@ -9,9 +9,27 @@ export const sort = curryRight((items, field, sortFn) =>
   )
 );
 
-export const sortByDateAsc = sort("dateString", compareAsc);
+export const sortByDateAsc = sort("dateString", (date1, date2) => {
+  const moment1 = moment(date1);
+  if (moment1.isSame(date2)) {
+    return 0;
+  } else if (moment1.isAfter(date2)) {
+    return 1;
+  } else {
+    return -1;
+  }
+});
 
-export const sortByDateDesc = sort("dateString", compareDesc);
+export const sortByDateDesc = sort("dateString", (date1, date2) => {
+  const moment1 = moment(date1);
+  if (moment1.isSame(date2)) {
+    return 0;
+  } else if (moment1.isBefore(date2)) {
+    return 1;
+  } else {
+    return -1;
+  }
+});
 
 export const findItem = (dateString, dateItems, items) => {
   const dateItem = find(dateItems, ["dateString", dateString]);
