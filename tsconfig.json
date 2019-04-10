@@ -14,13 +14,7 @@
     "strict": false,
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
-    "sourceMap": true,
-    "plugins": [
-      {
-        "name": "typescript-tslint-plugin",
-        "configFile": "./tslint.json"
-      }
-    ]
+    "sourceMap": true
   },
   "include": ["src"]
 }
