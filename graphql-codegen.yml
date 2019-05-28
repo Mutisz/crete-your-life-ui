@@ -1,0 +1,15 @@
+schema:
+  - http://localhost:4000
+  - ./src/state/schema.graphql
+documents: src/operations/**/*.graphql
+require:
+  - dotenv/config
+generates:
+  ./src/codegen/index.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo:
+          withHOC: false
+          withComponent: false
+          withHooks: true

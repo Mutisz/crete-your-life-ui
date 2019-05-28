@@ -1,0 +1,11 @@
+query Preferences {
+  preferences @client {
+    currency {
+      code
+    }
+  }
+  currencies {
+    code
+    rate
+  }
+}

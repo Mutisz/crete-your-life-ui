@@ -1,0 +1,55 @@
+enum BookingStep {
+  bookingStepTripInformation
+  bookingStepActivities
+  bookingStepConfirm
+}
+
+enum LanguageCode {
+  PL
+  EN
+}
+
+enum CurrencyCode {
+  EUR
+  USD
+  PLN
+}
+
+type BookingStatus {
+  activeStep: BookingStep!
+  fromDateString: String
+  toDateString: String
+  personCount: Int!
+  email: String
+  phone: String
+  dateActivitySelected: String
+  dateActivities: [DateActivity]!
+}
+
+type DateActivity {
+  dateString: String!
+  name: String!
+}
+
+type LanguagePreference {
+  code: LanguageCode!
+}
+
+type CurrencyPreference {
+  code: CurrencyCode!
+  rate: Float!
+}
+
+type Preferences {
+  language: LanguagePreference!
+  currency: CurrencyPreference!
+}
+
+type Query {
+  bookingStatus: BookingStatus!
+  preferences: Preferences!
+}
+
+type Mutation {
+  updateSelectedDateActivity(activityName: String!): [DateActivity]
+}

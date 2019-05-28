@@ -1,9 +1,15 @@
-# IDE directories
-.vscode/
-
 # Dependency directories
 node_modules/
 
-# dotenv environment variables file
+# Environment variables file
 .environments
 .env
+
+# IDE directory
+.vscode/
+
+# Code generation directories
+codegen
+
+# Build directories
+dist

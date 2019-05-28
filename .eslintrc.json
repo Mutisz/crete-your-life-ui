@@ -1,9 +1,9 @@
 {
   "extends": [
-    "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier/@typescript-eslint",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "react-app"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -21,5 +21,8 @@
     "react": {
       "version": "detect"
     }
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": false
   }
 }

@@ -1,11 +1,12 @@
-import i18n, { InitOptions } from "i18next";
+import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
-import { reactI18nextModule } from "react-i18next";
 
 import { EN, LANGUAGES } from "./consts/languageConsts";
 
-const config: InitOptions = {
+import { initReactI18next } from "react-i18next";
+
+const config: i18n.InitOptions = {
   debug: Boolean(process.env.REACT_APP_DEBUG),
   fallbackLng: EN,
   whitelist: Object.keys(LANGUAGES),
@@ -15,15 +16,17 @@ const config: InitOptions = {
     escapeValue: false
   },
   react: {
-    wait: true
+    wait: true,
+    useSuspense: false
   }
 };
 
-const createI18n = () =>
+const initializeI18n = (): void => {
   i18n
     .use(Backend)
     .use(LanguageDetector)
-    .use(reactI18nextModule)
-    .init(config, null);
+    .use(initReactI18next)
+    .init(config);
+};
 
-export default createI18n;
+export default initializeI18n;

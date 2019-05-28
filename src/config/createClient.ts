@@ -1,58 +1,54 @@
-import { ApolloClient } from "apollo-client";
+import { ApolloClient, ApolloClientOptions } from "apollo-client";
 import { ApolloCache } from "apollo-cache";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { onError, ErrorResponse } from "apollo-link-error";
-import { withClientState } from "apollo-link-state";
 
-import { defaults, typeDefs, resolvers } from "../schema";
+import { defaults, typeDefs, resolvers } from "../state";
+import { GraphQLError } from "graphql";
 
-const errorHandler = ({ graphQLErrors, networkError }: ErrorResponse) => {
+const logGraphQlError = ({ message, path }: GraphQLError): void =>
+  console.error(`[GraphQL error]: Message: ${message}, Path: ${path}`);
+
+const logNetworkError = ({ message }: Error): void =>
+  console.error(`[Network error]: ${message}`);
+
+const errorHandler = ({ graphQLErrors, networkError }: ErrorResponse): void => {
   if (graphQLErrors) {
-    graphQLErrors.map(({ message, locations, path }) =>
-      console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-      )
-    );
+    graphQLErrors.map(logGraphQlError);
   }
   if (networkError) {
-    console.log(`[Network error]: ${networkError}`);
+    logNetworkError(networkError);
   }
 };
 
-const createClientStateConfig = (
-  cache: ApolloCache<NormalizedCacheObject>
-) => ({
-  defaults,
-  typeDefs,
-  resolvers,
-  cache
-});
-
-const createLinkHttp = () =>
+const createLinkHttp = (): HttpLink =>
   new HttpLink({
-    uri: process.env.REACT_APP_GRAPHQL_URI,
+    uri: process.env.REACT_APP_API_URL,
     credentials: "same-origin"
   });
 
-const createLink = (cache: ApolloCache<NormalizedCacheObject>) =>
-  ApolloLink.from([
-    onError(errorHandler),
-    withClientState(createClientStateConfig(cache)),
-    createLinkHttp()
-  ]);
+const createLink = (): ApolloLink =>
+  ApolloLink.from([onError(errorHandler), createLinkHttp()]);
 
-const createCache = () => new InMemoryCache();
+const createCache = (): ApolloCache<NormalizedCacheObject> => {
+  const cache = new InMemoryCache();
+  cache.writeData({ data: defaults });
 
-const createConfig = () => {
-  const cache = createCache();
+  return cache;
+};
+
+const createConfig = (): ApolloClientOptions<NormalizedCacheObject> => {
   return {
-    link: createLink(cache),
-    cache
+    link: createLink(),
+    cache: createCache(),
+    typeDefs,
+    resolvers
   };
 };
 
-const createClient = () => new ApolloClient(createConfig());
+const createClient = (): ApolloClient<NormalizedCacheObject> =>
+  new ApolloClient(createConfig());
 
 export default createClient;

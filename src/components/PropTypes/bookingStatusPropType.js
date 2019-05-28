@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 import dateItemProp from "./dateItemPropType";
-import { BOOKING_STEPS } from "../../schema";
+import { BOOKING_STEPS } from "../../state";
 
 const bookingStatusProp = PropTypes.shape({
   activeStep: PropTypes.oneOf(BOOKING_STEPS).isRequired,

@@ -13,6 +13,11 @@ const GET_BOOKING_STATUS_QUERY = gql`
   }
 `;
 
+const createEmptyDateItem = dateString => ({
+  __typename: "DateActivity",
+  dateString: dateString
+});
+
 const getBookingStatus = cache =>
   cache.readQuery({
     query: GET_BOOKING_STATUS_QUERY
@@ -39,11 +44,6 @@ const getDateItemsPayload = (dateItemsIndex, dateItems) => ({
       [dateItemsIndex]: dateItems
     }
   }
-});
-
-const createEmptyDateItem = dateString => ({
-  __typename: "DateActivity",
-  dateString: dateString
 });
 
 const Mutation = {
